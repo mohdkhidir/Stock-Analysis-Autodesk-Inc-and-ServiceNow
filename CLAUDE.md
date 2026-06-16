@@ -27,11 +27,11 @@
 |---|---|---|
 | **Exchange** | NASDAQ | NYSE |
 | **Sector** | Software / CAD & PLM | Enterprise AI / ITSM |
-| **Price (Jun 12–13, 2026)** | **$198.43** ↓ -0.31% | **$102.13** ↑ +0.90% |
-| **Market Cap** | $52.4B | $105.2B |
+| **Price (Jun 15–16, 2026)** | **$191.29** ↓ -3.47% (Jun 16 est.) | **$104.27** ↑ +2.10% (Jun 15) |
+| **Market Cap** | $50.5B | $107.5B |
 | **Overall Rating** | ⭐⭐⭐⭐ 4.0/5 | ⭐⭐⭐⭐ 4.2/5 |
 | **Recommendation** | **SPECULATIVE BUY — Accumulate on Weakness** | **BUY / HOLD — Momentum Play** |
-| **12M Analyst Target** | $319.27 (+60.9% upside) | $149.62 (+46.5% upside) |
+| **12M Analyst Target** | $315.00 (+64.7% upside) | $146.00 (+40.0% upside) |
 
 ---
 
@@ -41,34 +41,34 @@
 
 | Metric | Value |
 |---|---|
-| Price | $198.43 |
-| Change | -$0.62 (-0.31%) · Jun 12 close |
-| Market Cap | $52.4B |
+| Price | $191.29 (Jun 16 est.) |
+| Change | -$7.14 (-3.47%) · Jun 16 |
+| Market Cap | $50.5B |
 | 52-Week Range | $168.20 – $276.58 |
 | Avg Volume (30d) | 2.6M shares |
-| P/E Ratio (TTM) | 44.1× |
+| P/E Ratio (TTM) | 42.5× |
 | EV / Revenue | 7.3× |
 | FY2026 Revenue | $7.21B (+17.5% YoY) |
 | Gross Margin | 90.9% |
-| Analyst Consensus | ⭐ Strong Buy (32 analysts) |
-| Avg Price Target (12M) | $319.27 (+60.9%) |
+| Analyst Consensus | ⭐ Strong Buy (33 analysts) |
+| Avg Price Target (12M) | $315.00 (+64.7%) |
 | Support / Resistance | $188–196 / $215–225 |
 
 ### NOW — ServiceNow, Inc.
 
 | Metric | Value |
 |---|---|
-| Price | $102.13 |
-| Change | +$0.91 (+0.90%) · Jun 13 close |
-| Market Cap | $105.2B |
+| Price | $104.27 |
+| Change | +$2.14 (+2.10%) · Jun 15 close |
+| Market Cap | $107.5B |
 | 52-Week Range | $81.24 – $211.48 |
 | Avg Volume (30d) | 4.8M shares |
 | P/E Ratio (TTM) | 62.1× |
 | EV / Revenue | 7.0× |
 | Q1 FY2026 Revenue | $3.77B (+22% YoY) |
 | Sub. Gross Margin | 80% |
-| Analyst Consensus | ⭐ Strong Buy (48 analysts) |
-| Avg Price Target (12M) | $149.62 (+46.5%) |
+| Analyst Consensus | ⭐ Strong Buy (45 analysts) |
+| Avg Price Target (12M) | $146.00 (+40.0%) |
 | Support / Resistance | $94–98 / $110–143 |
 
 ---
@@ -209,26 +209,26 @@
 | Metric | Value |
 |---|---|
 | Overall Rating | ⭐ Strong Buy |
-| Total Analysts | 32–33 |
-| Buy / Hold / Sell | 30 Buy / 3 Hold / 0 Sell |
-| Buy Ratio | 90.9% |
-| Avg 12M Price Target | **$319.27** |
-| High PT | $456.00 |
-| Low PT | $246.00 |
-| Implied Upside | **+60.9%** from $198.43 |
+| Total Analysts | 33 |
+| Buy / Hold / Sell | 28 Buy / 4 Hold / 1 Sell |
+| Buy Ratio | 84.8% |
+| Avg 12M Price Target | **$315.00** (↓ from $319) |
+| High PT | $385.00 (Barclays) |
+| Low PT | $262.00 (BMO Capital) |
+| Implied Upside | **+64.7%** from $191.29 |
 
 ### NOW — Analyst Consensus
 
 | Metric | Value |
 |---|---|
 | Overall Rating | ⭐ Strong Buy |
-| Total Analysts | 48–54 |
-| Buy / Hold / Sell | 43 Buy / 4 Hold / 1 Sell |
-| Buy Ratio | 89.6% |
-| Avg 12M Price Target | **$149.62** |
-| High PT | $236.00 (Bernstein, May 6 2026) |
-| Low PT | $85.00 |
-| Implied Upside | **+46.5%** from $102.13 |
+| Total Analysts | 45 |
+| Buy / Hold / Sell | 40 Buy / 4 Hold / 1 Sell |
+| Buy Ratio | 88.9% |
+| Avg 12M Price Target | **$146.00** (↓ from $149) |
+| High PT | $236.00 (Bernstein) |
+| Low PT | $100.00 |
+| Implied Upside | **+40.0%** from $104.27 |
 
 ### Recent Analyst Actions
 
@@ -237,10 +237,13 @@
 | Bernstein — Peter Weed | NOW | Outperform | $236 (↑ from $226) | May 6, 2026 | [Yahoo Finance](https://finance.yahoo.com/markets/stocks/articles/bernstein-raises-price-target-servicenow-101343680.html) |
 | Oppenheimer | NOW | Outperform | $220+ split-adj | 2026 | [TipRanks](https://www.tipranks.com/news/the-fly/servicenow-price-target-raised-to-1100-from-970-at-oppenheimer) |
 | Morgan Stanley | NOW | Overweight | $263 split-adj | 2026 | [TipRanks](https://www.tipranks.com/news/the-fly/servicenow-price-target-raised-to-1315-from-1250-at-morgan-stanley-thefly) |
+| Barclays | ADSK | Overweight | $385 (↑ from $355) | Jun 2026 | [TipRanks](https://www.tipranks.com/news/the-fly/autodesk-price-target-raised-to-385-from-355-at-barclays-thefly) |
+| RBC Capital | ADSK | Outperform | $305 (↓ from $335) | Jun 2026 | [Yahoo Finance](https://finance.yahoo.com/news/rbc-capital-lowers-price-target-153950473.html) |
+| BMO Capital | ADSK | Market Perform | $262 (↓ from $279) | Jun 2026 | [StockAnalysis](https://stockanalysis.com/stocks/adsk/forecast/) |
 | KeyBanc Capital | ADSK | Overweight | $341 (↓ from $365) | May 21, 2026 | [StockAnalysis](https://stockanalysis.com/stocks/adsk/forecast/) |
 | Wells Fargo | ADSK | Overweight | $330 (↓ from $350) | 2026 | [StockAnalysis](https://stockanalysis.com/stocks/adsk/) |
-| Consensus (33 analysts) | ADSK | Strong Buy | $319 avg / $456 high / $246 low | Jun 2026 | [WallStreetZen](https://www.wallstreetzen.com/stocks/us/nasdaq/adsk/stock-forecast) |
-| Consensus (48 analysts) | NOW | Strong Buy | $149 avg / $236 high / $85 low | Jun 2026 | [StockAnalysis](https://stockanalysis.com/stocks/now/ratings/) |
+| Consensus (33 analysts) | ADSK | Strong Buy | $315 avg / $385 high / $262 low | Jun 16, 2026 | [WallStreetZen](https://www.wallstreetzen.com/stocks/us/nasdaq/adsk/stock-forecast) |
+| Consensus (45 analysts) | NOW | Strong Buy | $146 avg / $236 high / $100 low | Jun 16, 2026 | [StockAnalysis](https://stockanalysis.com/stocks/now/ratings/) |
 
 ---
 
