@@ -395,6 +395,47 @@
   .vp-finding { display: flex; gap: 8px; margin-top: 6px; font-size: .77rem; }
   .vp-finding i { margin-top: 2px; flex-shrink: 0; }
 
+  /* ── Chart Style Gallery ── */
+  .gallery-wrap {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+  }
+  .gallery-title {
+    font-size: .68rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--muted); margin-bottom: 12px;
+  }
+  .gal-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 900px) { .gal-grid { grid-template-columns: repeat(3,1fr); } }
+  @media (max-width: 560px) { .gal-grid { grid-template-columns: repeat(2,1fr); } }
+  .gal-card {
+    background: var(--bg-card); border: 2px solid var(--border);
+    border-radius: 10px; padding: 10px 10px 8px;
+    cursor: pointer; transition: all .22s; text-align: center;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .gal-card:hover {
+    border-color: var(--purple); transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.4);
+  }
+  .gal-card.gal-active {
+    border-color: var(--purple); background: rgba(163,113,247,.1);
+    box-shadow: 0 0 0 3px rgba(163,113,247,.2);
+  }
+  .gal-icon { font-size: 1rem; color: var(--purple); }
+  .gal-name { font-size: .78rem; font-weight: 800; color: var(--text-primary); }
+  .gal-canvas-wrap { height: 72px; overflow: hidden; }
+  .gal-canvas-wrap canvas { width: 100% !important; height: 72px !important; display: block; }
+  .gal-desc { font-size: .65rem; color: var(--muted); line-height: 1.4; }
+  .gal-badge {
+    font-size: .6rem; font-weight: 800; padding: 2px 7px; border-radius: 20px;
+    display: inline-block; border: 1px solid var(--purple);
+    color: var(--purple); background: rgba(163,113,247,.12);
+  }
+
   /* ── Chart range toggle ── */
   .range-toggle { display: flex; gap: 4px; flex-wrap: wrap; }
   .range-btn {
@@ -443,6 +484,7 @@
 <div class="jump-nav" id="jump-nav">
   <a href="#sec-snapshot"><i class="fa fa-bolt me-1"></i>Snapshot</a>
   <a href="#sec-price"><i class="fa fa-chart-line me-1"></i>Price Charts</a>
+  <a href="#sec-gallery"><i class="fa fa-palette me-1"></i>Chart Gallery</a>
   <a href="#sec-sr"><i class="fa fa-shield-halved me-1"></i>S/R Levels</a>
   <a href="#sec-volume"><i class="fa fa-chart-bar me-1"></i>Volume Profile</a>
   <a href="#sec-technical"><i class="fa fa-magnifying-glass-chart me-1"></i>Technicals</a>
@@ -605,6 +647,59 @@
       </div>
       <div class="zoom-hint"><i class="fa fa-hand-pointer me-1"></i>Scroll to zoom · Drag to pan</div>
     </div>
+  </div>
+</div>
+
+<!-- ═══ CHART STYLE GALLERY ═══ -->
+<div class="gallery-wrap mt-3" id="sec-gallery" data-aos="fade-up" data-aos-duration="400">
+  <div class="gallery-title"><i class="fa fa-palette me-1"></i>Chart Style Gallery — click any preview to apply</div>
+  <div class="gal-grid">
+
+    <!-- Line -->
+    <div class="gal-card gal-active" id="gal-line" data-type="line">
+      <div class="gal-icon"><i class="fa fa-chart-line"></i></div>
+      <div class="gal-name">Line</div>
+      <div class="gal-canvas-wrap"><canvas id="prev-line"></canvas></div>
+      <div class="gal-desc">Smooth area chart. Best for long-range trend direction.</div>
+      <span class="gal-badge">Default</span>
+    </div>
+
+    <!-- Candlestick -->
+    <div class="gal-card" id="gal-candlestick" data-type="candlestick">
+      <div class="gal-icon"><i class="fa fa-align-justify"></i></div>
+      <div class="gal-name">Candlestick</div>
+      <div class="gal-canvas-wrap"><canvas id="prev-candlestick"></canvas></div>
+      <div class="gal-desc">OHLC boxes. Green = bull candle, Red = bear candle.</div>
+      <span class="gal-badge">Pattern Analysis</span>
+    </div>
+
+    <!-- OHLC Bar -->
+    <div class="gal-card" id="gal-ohlc" data-type="ohlc">
+      <div class="gal-icon"><i class="fa fa-bars"></i></div>
+      <div class="gal-name">OHLC Bar</div>
+      <div class="gal-canvas-wrap"><canvas id="prev-ohlc"></canvas></div>
+      <div class="gal-desc">Open/close ticks on a high-low stem. Classic bar chart.</div>
+      <span class="gal-badge">Classic</span>
+    </div>
+
+    <!-- Heikin Ashi -->
+    <div class="gal-card" id="gal-heikinashi" data-type="heikinashi">
+      <div class="gal-icon"><i class="fa fa-fire"></i></div>
+      <div class="gal-name">Heikin Ashi</div>
+      <div class="gal-canvas-wrap"><canvas id="prev-heikinashi"></canvas></div>
+      <div class="gal-desc">Noise-filtered candles. Consecutive same-color = strong trend.</div>
+      <span class="gal-badge">Trend Filter</span>
+    </div>
+
+    <!-- Renko -->
+    <div class="gal-card" id="gal-renko" data-type="renko">
+      <div class="gal-icon"><i class="fa fa-th-large"></i></div>
+      <div class="gal-name">Renko</div>
+      <div class="gal-canvas-wrap"><canvas id="prev-renko"></canvas></div>
+      <div class="gal-desc">Brick chart. Time-independent — shows pure price movement.</div>
+      <span class="gal-badge">No-Time Axis</span>
+    </div>
+
   </div>
 </div>
 
@@ -1616,8 +1711,118 @@ function applyChartUpdate() {
   }
 }
 
+/* ════════════════════════════════════════════
+   CHART STYLE GALLERY — live mini-chart previews
+   ════════════════════════════════════════════ */
+function initGallery() {
+  // Use last 12 daily bars for a clear mini-preview
+  const n = 12;
+  const pLabels = dailyData.labels.slice(-n);
+  const pClose  = dailyData.adskPrice.slice(-n);
+  const pOHLC   = dailyData.adskOHLC.slice(-n);
+  const pHA     = calcHeikinAshi(dailyData.adskOHLC).slice(-n);
+  const pRenko  = calcRenko(pOHLC, pClose);
+
+  const noAxes = {
+    x: { display:false },
+    y: { display:false }
+  };
+  const miniBase = {
+    responsive:true, maintainAspectRatio:false,
+    plugins: { legend:{display:false}, tooltip:{enabled:false}, annotation:{} },
+    scales: noAxes,
+    animation: { duration:900, easing:'easeOutQuart' }
+  };
+  const finScales = { x:{ type:'category', display:false }, y:{ display:false } };
+
+  /* Line */
+  new Chart(document.getElementById('prev-line'), {
+    data:{ labels:pLabels, datasets:[{
+      type:'line', data:pClose,
+      borderColor:'#f0a500', backgroundColor:'rgba(240,165,0,.18)',
+      borderWidth:2, fill:true, tension:.4, pointRadius:0
+    }]},
+    options: miniBase
+  });
+
+  /* Candlestick */
+  new Chart(document.getElementById('prev-candlestick'), {
+    data:{ labels:pLabels, datasets:[{
+      type:'candlestick',
+      data: pLabels.map((x,i) => ({ x, ...pOHLC[i] })),
+      color:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' },
+      borderColor:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' }
+    }]},
+    options:{ ...miniBase, scales: finScales }
+  });
+
+  /* OHLC Bar */
+  new Chart(document.getElementById('prev-ohlc'), {
+    data:{ labels:pLabels, datasets:[{
+      type:'ohlc',
+      data: pLabels.map((x,i) => ({ x, ...pOHLC[i] })),
+      color:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' },
+      borderColor:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' }
+    }]},
+    options:{ ...miniBase, scales: finScales }
+  });
+
+  /* Heikin Ashi */
+  new Chart(document.getElementById('prev-heikinashi'), {
+    data:{ labels:pLabels, datasets:[{
+      type:'candlestick',
+      data: pLabels.map((x,i) => ({ x, ...pHA[i] })),
+      color:{ up:'#00d4aa', down:'#f85149', unchanged:'#8b949e' },
+      borderColor:{ up:'#00d4aa', down:'#f85149', unchanged:'#8b949e' }
+    }]},
+    options:{ ...miniBase, scales: finScales }
+  });
+
+  /* Renko */
+  new Chart(document.getElementById('prev-renko'), {
+    type:'bar',
+    data:{
+      labels: pRenko.bricks.map((_,i) => i),
+      datasets:[{
+        data: pRenko.bricks.map(b => b.y),
+        backgroundColor: pRenko.bricks.map(b => b.bull ? 'rgba(63,185,80,.85)' : 'rgba(248,81,73,.85)'),
+        borderColor:     pRenko.bricks.map(b => b.bull ? '#3fb950' : '#f85149'),
+        borderWidth:1, barPercentage:.95, categoryPercentage:1
+      }]
+    },
+    options:{ ...miniBase, scales:{ x:{display:false}, y:{display:false} } }
+  });
+
+  /* Gallery card click → apply chart type */
+  document.querySelectorAll('.gal-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const type = card.dataset.type;
+      // Update gallery active state
+      document.querySelectorAll('.gal-card').forEach(c => c.classList.remove('gal-active'));
+      card.classList.add('gal-active');
+      // Sync toolbar buttons
+      document.querySelectorAll('.ct-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.type === type);
+      });
+      currentChartType = type;
+      applyChartUpdate();
+    });
+  });
+
+  /* Keep gallery in sync when toolbar buttons are clicked */
+  document.querySelectorAll('.ct-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      document.querySelectorAll('.gal-card').forEach(c => {
+        c.classList.toggle('gal-active', c.dataset.type === type);
+      });
+    });
+  });
+}
+
 /* bootstrap initial render */
 rebuildPriceCharts();
+initGallery();
 
 /* ════════════════════════════════════════════
    TOOLBAR EVENT LISTENERS
