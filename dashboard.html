@@ -538,8 +538,10 @@
   <div class="toolbar-group">
     <span class="toolbar-label">Style</span>
     <button class="ct-btn active" data-type="line"><i class="fa fa-chart-line me-1"></i>Line</button>
-    <button class="ct-btn" data-type="candlestick"><i class="fa fa-align-justify me-1"></i>Candle</button>
-    <button class="ct-btn" data-type="ohlc"><i class="fa fa-bars me-1"></i>OHLC</button>
+    <button class="ct-btn" data-type="candlestick"><i class="fa fa-align-justify me-1"></i>Candlestick</button>
+    <button class="ct-btn" data-type="ohlc"><i class="fa fa-bars me-1"></i>OHLC Bar</button>
+    <button class="ct-btn" data-type="heikinashi"><i class="fa fa-fire me-1"></i>Heikin Ashi</button>
+    <button class="ct-btn" data-type="renko"><i class="fa fa-th-large me-1"></i>Renko</button>
   </div>
   <div class="toolbar-sep"></div>
   <!-- Indicators -->
@@ -1176,10 +1178,21 @@ function buildHourlyData() {
     return parseFloat((pv / v).toFixed(2));
   });
 
+  // Build approximate OHLC for hourly bars (O = prev close, H/L with small noise)
+  const makeOHLC = (prices, rng) => prices.map((c, i) => {
+    const o = i === 0 ? c * (1 + rng() * 0.001) : prices[i - 1];
+    const noise = Math.abs(rng()) * c * 0.006;
+    const h = parseFloat((Math.max(o, c) + noise * 0.6).toFixed(2));
+    const l = parseFloat((Math.min(o, c) - noise * 0.6).toFixed(2));
+    return { o: parseFloat(o.toFixed(2)), h, l, c };
+  });
+
   return {
     labels,
     adskPrice: adskPrices, adskVWAP: rollingVWAP(adskPrices, adskVols), adskVol: adskVols,
     nowPrice:  nowPrices,  nowVWAP:  rollingVWAP(nowPrices,  nowVols),  nowVol:  nowVols,
+    adskOHLC: makeOHLC(adskPrices, r1),
+    nowOHLC:  makeOHLC(nowPrices,  r2),
     label: 'Hourly (30-min bars) · Apr 1 – Jun 13, 2026 · Scroll to zoom'
   };
 }
@@ -1227,6 +1240,45 @@ function fibLevels(high, low) {
     r786: parseFloat((low + r * 0.786).toFixed(2)),
     r100: parseFloat(high.toFixed(2))
   };
+}
+
+/* ── Heikin Ashi: smoothed candles that filter noise ── */
+function calcHeikinAshi(ohlcArr) {
+  const ha = [];
+  for (let i = 0; i < ohlcArr.length; i++) {
+    const { o, h, l, c } = ohlcArr[i];
+    const haC = +((o + h + l + c) / 4).toFixed(2);
+    const haO = i === 0 ? +((o + c) / 2).toFixed(2) : +((ha[i-1].o + ha[i-1].c) / 2).toFixed(2);
+    const haH = +(Math.max(h, haO, haC)).toFixed(2);
+    const haL = +(Math.min(l, haO, haC)).toFixed(2);
+    ha.push({ o: haO, h: haH, l: haL, c: haC });
+  }
+  return ha;
+}
+
+/* ── Renko: brick-based price chart (no time axis) ── */
+function calcRenko(ohlcArr, closes) {
+  // Brick size ≈ average bar range (simplified ATR)
+  const avgRange = ohlcArr.reduce((s, b) => s + (b.h - b.l), 0) / ohlcArr.length;
+  const brickSize = parseFloat(Math.max(avgRange * 1.2, closes[0] * 0.008).toFixed(2));
+
+  const bricks = [];
+  // Snap start to nearest brick boundary
+  let top    = Math.round(closes[0] / brickSize) * brickSize;
+  let bottom = top - brickSize;
+
+  for (let i = 1; i < closes.length; i++) {
+    const p = closes[i];
+    while (p >= top + brickSize) {
+      bricks.push({ y: [+top.toFixed(2), +(top + brickSize).toFixed(2)], bull: true });
+      bottom = top; top += brickSize;
+    }
+    while (p <= bottom - brickSize) {
+      bricks.push({ y: [+(bottom - brickSize).toFixed(2), +bottom.toFixed(2)], bull: false });
+      top = bottom; bottom -= brickSize;
+    }
+  }
+  return { bricks, brickSize: +brickSize.toFixed(2) };
 }
 
 /* ════════════════════════════════════════════
@@ -1356,28 +1408,12 @@ function makeBaseScales(volMax) {
   };
 }
 
-function makePriceDataset(color, fillColor, label, closes, ohlcArr, type, radius) {
-  if (type === 'line') {
-    return { type:'line', label, data:closes,
-      borderColor:color, backgroundColor:fillColor, borderWidth:2.5,
-      pointRadius:radius, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 };
-  }
-  const d = getData();
-  const mapped = d.labels.map((x,i) => {
-    const bar = ohlcArr && ohlcArr[i] ? ohlcArr[i] : {o:closes[i],h:closes[i],l:closes[i],c:closes[i]};
-    return { x, o:bar.o, h:bar.h, l:bar.l, c:bar.c };
-  });
-  return { type, label, data:mapped,
-    color:{ up:color, down:'#f85149', unchanged:'#8b949e' },
-    borderColor:{ up:color, down:'#f85149', unchanged:'#8b949e' },
-    yAxisID:'y', order:1 };
-}
 
 function buildAnnotations(stock) {
   let base = {};
   if (currentRange === 'daily') {
     base = stock === 'adsk' ? { ...adskAnnotationsDaily } : { ...nowAnnotationsDaily };
-    if (currentChartType !== 'line') Object.assign(base, buildPatternAnnotations(stock));
+    if (currentChartType === 'candlestick' || currentChartType === 'heikinashi') Object.assign(base, buildPatternAnnotations(stock));
   } else if (currentRange === 'weekly') {
     base = stock === 'adsk' ? { ...adskAnnotationsWeekly } : { ...nowAnnotationsWeekly };
   }
@@ -1398,51 +1434,18 @@ function buildAnnotations(stock) {
 }
 
 /* ════════════════════════════════════════════
-   CREATE CHARTS
+   PRICE CHART INSTANCES (mutable — destroyed/recreated on type switch)
+   Chart.js binds a dataset's controller at creation; Object.assign on
+   `type` does NOT switch the renderer. Destroy + recreate is required.
    ════════════════════════════════════════════ */
-const adskChart = new Chart(document.getElementById('adskChart'), {
-  data: {
-    labels: dailyData.labels,
-    datasets: [
-      makePriceDataset('#f0a500','rgba(240,165,0,.07)','ADSK Price',dailyData.adskPrice,dailyData.adskOHLC,'line',3),
-      { type:'line', label:'VWAP', data:dailyData.adskVWAP, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
-      { type:'bar',  label:'Vol (M)', data:dailyData.adskVol, backgroundColor:'rgba(240,165,0,.15)', yAxisID:'yVol', barPercentage:.6, order:3 },
-      { type:'line', label:'BB Upper', data:[], borderColor:'rgba(240,165,0,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
-      { type:'line', label:'BB Mid',   data:[], borderColor:'rgba(240,165,0,.3)',  borderWidth:1, borderDash:[6,5], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
-      { type:'line', label:'BB Lower', data:[], borderColor:'rgba(240,165,0,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:'+1', backgroundColor:'rgba(240,165,0,.04)', hidden:true, order:2 },
-    ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:true,
-    plugins:{ legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:buildAnnotations('adsk')}, zoom:zoomPlugin },
-    scales: makeBaseScales(Math.max(...dailyData.adskVol)*5)
-  }
-});
+let adskChart = null;
+let nowChart  = null;
 
-const nowChart = new Chart(document.getElementById('nowChart'), {
-  data: {
-    labels: dailyData.labels,
-    datasets: [
-      makePriceDataset('#00d4aa','rgba(0,212,170,.07)','NOW Price',dailyData.nowPrice,dailyData.nowOHLC,'line',3),
-      { type:'line', label:'VWAP', data:dailyData.nowVWAP, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
-      { type:'bar',  label:'Vol (M)', data:dailyData.nowVol, backgroundColor:'rgba(0,212,170,.15)', yAxisID:'yVol', barPercentage:.6, order:3 },
-      { type:'line', label:'BB Upper', data:[], borderColor:'rgba(0,212,170,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
-      { type:'line', label:'BB Mid',   data:[], borderColor:'rgba(0,212,170,.3)',  borderWidth:1, borderDash:[6,5], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
-      { type:'line', label:'BB Lower', data:[], borderColor:'rgba(0,212,170,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:'+1', backgroundColor:'rgba(0,212,170,.04)', hidden:true, order:2 },
-    ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:true,
-    plugins:{ legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:buildAnnotations('now')}, zoom:zoomPlugin },
-    scales: makeBaseScales(Math.max(...dailyData.nowVol)*5)
-  }
-});
-
-/* ── RSI sub-charts ── */
+/* ── RSI sub-charts (permanent — never destroyed) ── */
 const rsiScales = () => ({
-  x:   { display:false, ticks:{color:mutedColor,font:{size:9}}, grid:{color:gridColor} },
-  y:   { min:0, max:100, ticks:{color:mutedColor,font:{size:9}, callback:v=>`${v}`}, grid:{color:gridColor},
-         afterBuildTicks: a => { a.ticks = [{value:30},{value:50},{value:70}]; } }
+  x: { display:false, ticks:{color:mutedColor,font:{size:9}}, grid:{color:gridColor} },
+  y: { min:0, max:100, ticks:{color:mutedColor,font:{size:9}}, grid:{color:gridColor},
+       afterBuildTicks: a => { a.ticks = [{value:30},{value:50},{value:70}]; } }
 });
 const adskRSIChart = new Chart(document.getElementById('adskRSI'), {
   type:'line', data:{ labels:dailyData.labels, datasets:[{ label:'RSI(14)', data:calcRSI(dailyData.adskPrice,14), borderColor:'#ffa657', borderWidth:1.5, pointRadius:0, tension:.3 }]},
@@ -1460,38 +1463,146 @@ const nowRSIChart = new Chart(document.getElementById('nowRSI'), {
 });
 
 /* ════════════════════════════════════════════
-   MASTER UPDATE — RANGE / TYPE / INDICATORS
+   CHART BUILDER — destroy old, create fresh
    ════════════════════════════════════════════ */
-function applyChartUpdate() {
-  const d   = getData();
-  const isH = currentRange === 'hourly';
-  const isD = currentRange === 'daily';
-  const pt  = isH ? 0 : 3;
-  const bbP = isH ? 20 : 10;
+function destroyPriceCharts() {
+  if (adskChart) { adskChart.destroy(); adskChart = null; }
+  if (nowChart)  { nowChart.destroy();  nowChart  = null; }
+}
+
+function sharedOpts(annotations, volMax) {
+  return {
+    responsive:true, maintainAspectRatio:true,
+    plugins:{ legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations}, zoom:zoomPlugin },
+    scales: makeBaseScales(volMax)
+  };
+}
+
+function bbDatasets(color, rgba, bb, bbOn) {
+  return [
+    { type:'line', label:'BB Upper', data:bb.upper,  borderColor:`${rgba}.5)`,  borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:false, hidden:!bbOn, order:2 },
+    { type:'line', label:'BB Mid',   data:bb.middle, borderColor:`${rgba}.3)`,  borderWidth:1, borderDash:[6,5], pointRadius:0, yAxisID:'y', fill:false, hidden:!bbOn, order:2 },
+    { type:'line', label:'BB Lower', data:bb.lower,  borderColor:`${rgba}.5)`,  borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:'+1', backgroundColor:`${rgba}.04)`, hidden:!bbOn, order:2 },
+  ];
+}
+
+function rebuildPriceCharts() {
+  const d    = getData();
+  const isH  = currentRange === 'hourly';
+  const isD  = currentRange === 'daily';
+  const bbP  = isH ? 20 : 10;
   const bbOn = activeIndicators.has('bb');
+  const pt   = isH ? 0 : 3;
+
+  destroyPriceCharts();
+
+  /* ── RENKO ─────────────────────────────────────────────── */
+  if (currentChartType === 'renko') {
+    const aOHLC = d.adskOHLC || d.adskPrice.map(c=>({o:c,h:c,l:c,c}));
+    const nOHLC = d.nowOHLC  || d.nowPrice.map(c=>({o:c,h:c,l:c,c}));
+    const aR = calcRenko(aOHLC, d.adskPrice);
+    const nR = calcRenko(nOHLC, d.nowPrice);
+
+    const renkoDS = (renko, color) => [{
+      type:'bar', label:'Renko',
+      data: renko.bricks.map(b => b.y),
+      backgroundColor: renko.bricks.map(b => b.bull ? 'rgba(63,185,80,.8)' : 'rgba(248,81,73,.8)'),
+      borderColor:     renko.bricks.map(b => b.bull ? '#3fb950' : '#f85149'),
+      borderWidth:1, barPercentage:0.95, categoryPercentage:1.0
+    }];
+
+    const renkoOpts = (renko, label) => ({
+      responsive:true, maintainAspectRatio:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{ ...tooltipDefaults,
+          callbacks:{
+            title: items => `${label} Brick #${+items[0].label + 1}`,
+            label: ctx  => {
+              const [lo,hi] = ctx.raw;
+              const bull = ctx.dataset.backgroundColor[ctx.dataIndex].includes('63,185');
+              return [`${bull?'▲ Bull':'▼ Bear'} brick`, `$${lo.toFixed(2)} → $${hi.toFixed(2)}`, `Size: $${(hi-lo).toFixed(2)}`];
+            }
+          }
+        },
+        zoom:zoomPlugin
+      },
+      scales:{
+        x:{ ticks:{ color:mutedColor, font:{size:9}, maxTicksLimit:10,
+              callback:(_,i) => `B${i+1}` }, grid:{color:gridColor} },
+        y:{ ticks:{color:mutedColor,font:{size:10}}, grid:{color:gridColor} }
+      }
+    });
+
+    adskChart = new Chart(document.getElementById('adskChart'), { type:'bar', data:{ labels:aR.bricks.map((_,i)=>i), datasets:renkoDS(aR,'#f0a500') }, options:renkoOpts(aR,'ADSK') });
+    nowChart  = new Chart(document.getElementById('nowChart'),  { type:'bar', data:{ labels:nR.bricks.map((_,i)=>i), datasets:renkoDS(nR,'#00d4aa') }, options:renkoOpts(nR,'NOW') });
+
+    document.getElementById('range-label').textContent =
+      `Renko · ADSK brick $${aR.brickSize} · NOW brick $${nR.brickSize} · ${aR.bricks.length} / ${nR.bricks.length} bricks`;
+    document.getElementById('adsk-pat-legend').style.display = 'none';
+    document.getElementById('now-pat-legend').style.display  = 'none';
+    return;
+  }
+
+  /* ── HEIKIN ASHI, CANDLESTICK, OHLC ───────────────────── */
+  const isFinancial = (currentChartType !== 'line');
+  const aOHLCraw = d.adskOHLC || d.adskPrice.map(c=>({o:c,h:c,l:c,c}));
+  const nOHLCraw = d.nowOHLC  || d.nowPrice.map(c=>({o:c,h:c,l:c,c}));
+  const aOHLC = currentChartType === 'heikinashi' ? calcHeikinAshi(aOHLCraw) : aOHLCraw;
+  const nOHLC = currentChartType === 'heikinashi' ? calcHeikinAshi(nOHLCraw) : nOHLCraw;
+  const candleType = (currentChartType === 'heikinashi') ? 'candlestick' : currentChartType;
 
   const adskBB = calcBB(d.adskPrice, bbP);
   const nowBB  = calcBB(d.nowPrice,  bbP);
+  const adskAnn = buildAnnotations('adsk');
+  const nowAnn  = buildAnnotations('now');
 
-  [[adskChart,'adsk','#f0a500','rgba(240,165,0,',d.adskPrice,d.adskOHLC,d.adskVWAP,d.adskVol,adskBB],
-   [nowChart, 'now', '#00d4aa','rgba(0,212,170,',d.nowPrice, d.nowOHLC, d.nowVWAP, d.nowVol, nowBB]
-  ].forEach(([ch,st,col,rgba,closes,ohlc,vwap,vol,bb]) => {
-    ch.data.labels = d.labels;
-    const ds0 = makePriceDataset(col,`${rgba}.07)`,st==='adsk'?'ADSK Price':'NOW Price',closes,ohlc,currentChartType,pt);
-    Object.assign(ch.data.datasets[0], ds0);
-    ch.data.datasets[1].data = vwap;
-    ch.data.datasets[2].data = vol;
-    ch.options.scales.yVol.max = Math.max(...vol)*5;
-    ch.data.datasets[3].data = bb.upper; ch.data.datasets[3].hidden = !bbOn;
-    ch.data.datasets[4].data = bb.middle; ch.data.datasets[4].hidden = !bbOn;
-    ch.data.datasets[5].data = bb.lower; ch.data.datasets[5].hidden = !bbOn;
-    ch.options.plugins.annotation.annotations = buildAnnotations(st);
-    ch.resetZoom(); ch.update('active');
-  });
+  if (!isFinancial) {
+    /* ── LINE ─────────────────────────────────────────────── */
+    const lineDS = (color, rgba, lbl, closes, vwap, vol, bb) => [
+      { type:'line', label:lbl, data:closes, borderColor:color, backgroundColor:`${rgba}.07)`, borderWidth:2.5, pointRadius:pt, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 },
+      { type:'line', label:'VWAP', data:vwap, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
+      { type:'bar',  label:'Vol (M)', data:vol, backgroundColor:`${rgba}.15)`, yAxisID:'yVol', barPercentage:.6, order:3 },
+      ...bbDatasets(color, rgba, bb, bbOn)
+    ];
+    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:lineDS('#f0a500','rgba(240,165,0','ADSK Price',d.adskPrice,d.adskVWAP,d.adskVol,adskBB) }, options:sharedOpts(adskAnn,Math.max(...d.adskVol)*5) });
+    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:lineDS('#00d4aa','rgba(0,212,170','NOW Price',  d.nowPrice, d.nowVWAP, d.nowVol, nowBB)  }, options:sharedOpts(nowAnn, Math.max(...d.nowVol)*5)  });
+  } else {
+    /* ── CANDLESTICK / OHLC / HEIKIN ASHI ─────────────────── */
+    const finDS = (color, rgba, lbl, ohlcData, vwap, vol, bb, ctype) => [
+      { type:ctype, label:lbl,
+        data: d.labels.map((x, i) => ({ x, ...ohlcData[i] })),
+        color:{ up:color, down:'#f85149', unchanged:'#8b949e' },
+        borderColor:{ up:color, down:'#f85149', unchanged:'#8b949e' },
+        yAxisID:'y', order:1 },
+      { type:'line', label:'VWAP', data:vwap, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
+      { type:'bar',  label:'Vol (M)', data:vol, backgroundColor:`${rgba}.15)`, yAxisID:'yVol', barPercentage:.6, order:3 },
+      ...bbDatasets(color, rgba, bb, bbOn)
+    ];
+    const aLbl = currentChartType === 'heikinashi' ? 'ADSK (HA)' : 'ADSK OHLC';
+    const nLbl = currentChartType === 'heikinashi' ? 'NOW (HA)'  : 'NOW OHLC';
+    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:finDS('#f0a500','rgba(240,165,0',aLbl,aOHLC,d.adskVWAP,d.adskVol,adskBB,candleType) }, options:sharedOpts(adskAnn,Math.max(...d.adskVol)*5) });
+    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:finDS('#00d4aa','rgba(0,212,170',nLbl,nOHLC,d.nowVWAP, d.nowVol, nowBB, candleType) }, options:sharedOpts(nowAnn, Math.max(...d.nowVol)*5) });
+  }
 
-  // RSI panels
+  /* ── Pattern legends (daily + financial only) ── */
+  const showPat = isD && isFinancial && currentChartType !== 'ohlc';
+  document.getElementById('adsk-pat-legend').style.display = showPat ? 'flex' : 'none';
+  document.getElementById('now-pat-legend').style.display  = showPat ? 'flex' : 'none';
+
+  const typeLabel = { line:'', candlestick:' · Candlestick', ohlc:' · OHLC Bars', heikinashi:' · Heikin Ashi (smoothed)' };
+  document.getElementById('range-label').textContent = d.label + (typeLabel[currentChartType] || '');
+}
+
+/* ════════════════════════════════════════════
+   MASTER UPDATE — RANGE / TYPE / INDICATORS
+   ════════════════════════════════════════════ */
+function applyChartUpdate() {
+  rebuildPriceCharts();
+
+  const d = getData();
   const rsiPs = [...activeIndicators].filter(i=>i.startsWith('rsi')).map(i=>+i.slice(3)).sort();
-  const showRSI = rsiPs.length > 0;
+  const showRSI = rsiPs.length > 0 && currentChartType !== 'renko';
   document.getElementById('adsk-rsi-panel').classList.toggle('visible', showRSI);
   document.getElementById('now-rsi-panel').classList.toggle('visible',  showRSI);
   if (showRSI) {
@@ -1503,14 +1614,10 @@ function applyChartUpdate() {
       rc.update('active');
     });
   }
-
-  // Pattern legends (candle/ohlc daily only)
-  const showPat = isD && currentChartType !== 'line';
-  document.getElementById('adsk-pat-legend').style.display = showPat ? 'flex' : 'none';
-  document.getElementById('now-pat-legend').style.display  = showPat ? 'flex' : 'none';
-
-  document.getElementById('range-label').textContent = d.label;
 }
+
+/* bootstrap initial render */
+rebuildPriceCharts();
 
 /* ════════════════════════════════════════════
    TOOLBAR EVENT LISTENERS
@@ -1556,28 +1663,17 @@ function applyTheme(theme) {
   const tooltipTtl = isDark ? '#e6edf3' : '#1f2328';
   const tooltipBdy = isDark ? '#8b949e' : '#57606a';
 
-  // RSI charts
+  // RSI charts (permanent — update in-place)
   [adskRSIChart, nowRSIChart].forEach(ch => {
-    ch.options.scales.x.grid.color     = gc;
-    ch.options.scales.y.ticks.color    = mc;
-    ch.options.scales.y.grid.color     = gc;
+    ch.options.scales.x.grid.color           = gc;
+    ch.options.scales.y.ticks.color          = mc;
+    ch.options.scales.y.grid.color           = gc;
     ch.options.plugins.tooltip.backgroundColor = tooltipBg;
     ch.options.plugins.tooltip.bodyColor       = tooltipBdy;
     ch.update('none');
   });
-  // Price charts (x + y + yVol scales, legend, tooltip)
-  [adskChart, nowChart].forEach(ch => {
-    ch.options.scales.x.ticks.color    = mutedColor;
-    ch.options.scales.x.grid.color     = gridColor;
-    ch.options.scales.y.ticks.color    = mutedColor;
-    ch.options.scales.y.grid.color     = gridColor;
-    ch.options.plugins.legend.labels.color     = mutedColor;
-    ch.options.plugins.tooltip.backgroundColor = tooltipBg;
-    ch.options.plugins.tooltip.borderColor     = tooltipBdr;
-    ch.options.plugins.tooltip.titleColor      = tooltipTtl;
-    ch.options.plugins.tooltip.bodyColor       = tooltipBdy;
-    ch.update('none');
-  });
+  // Price charts — rebuild from scratch so new theme vars are baked in
+  rebuildPriceCharts();
 
   // Volume profile charts (x + y scales + tooltip body)
   [adskVPChart, nowVPChart].forEach(ch => {
