@@ -9,10 +9,28 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <!-- FontAwesome 6 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- AOS — Animate On Scroll -->
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+<!-- Tippy.js -->
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <!-- Chart.js Annotation Plugin -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<!-- Chart.js Financial (Candlestick / OHLC) -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js"></script>
+<!-- Hammer.js (required by zoom plugin) -->
+<script src="https://unpkg.com/hammerjs@2.0.8/hammer.min.js"></script>
+<!-- Chart.js Zoom Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+<!-- Popper + Tippy -->
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<!-- CountUp.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <style>
   :root {
@@ -32,24 +50,117 @@
     --warn-dim:   rgba(255,166,87,.12);
     --muted:      #8b949e;
     --purple:     #a371f7;
+    --text-primary:      #e6edf3;
+    --verdict-adsk-bg:   #0d1f0d;
+    --verdict-now-bg:    #091f1a;
+    --chart-tooltip-bg:  #1c2128;
+    --chart-tooltip-bdr: #30363d;
+    --chart-tooltip-ttl: #e6edf3;
+    --chart-grid:        #30363d;
+    --chart-muted:       #8b949e;
   }
 
-  body { background: var(--bg-base) !important; font-size: .88rem; }
+  html[data-theme="light"] {
+    --bg-base:    #f6f8fa;
+    --bg-card:    #ffffff;
+    --bg-card2:   #eaeef2;
+    --border:     #d0d7de;
+    --adsk:       #b87a00;
+    --adsk-dim:   rgba(184,122,0,.1);
+    --now:        #00a688;
+    --now-dim:    rgba(0,166,136,.1);
+    --pos:        #1a7f37;
+    --pos-dim:    rgba(26,127,55,.1);
+    --neg:        #cf222e;
+    --neg-dim:    rgba(207,34,46,.1);
+    --warn:       #9a6700;
+    --warn-dim:   rgba(154,103,0,.1);
+    --muted:      #57606a;
+    --purple:     #8250df;
+    --text-primary:      #1f2328;
+    --verdict-adsk-bg:   #fffbeb;
+    --verdict-now-bg:    #f0fdf9;
+    --chart-tooltip-bg:  #ffffff;
+    --chart-tooltip-bdr: #d0d7de;
+    --chart-tooltip-ttl: #1f2328;
+    --chart-grid:        #d0d7de;
+    --chart-muted:       #57606a;
+  }
 
-  /* Navbar */
-  .dash-nav { background: linear-gradient(135deg, var(--bg-card) 0%, #1a2332 100%) !important;
-    border-bottom: 2px solid var(--border); padding: 14px 24px; }
+  /* light-mode navbar override */
+  html[data-theme="light"] .dash-nav {
+    background: linear-gradient(135deg, #ffffff 0%, #eaf0f8 100%) !important;
+    border-bottom-color: var(--border) !important;
+  }
+  html[data-theme="light"] .dash-nav .brand { color: #0969da; }
+  html[data-theme="light"] .table { color: var(--text-primary) !important; }
+  html[data-theme="light"] .table thead tr { background: var(--bg-card2) !important; }
+  html[data-theme="light"] .table-hover tbody tr:hover { background: var(--bg-card2) !important; }
+
+  body { background: var(--bg-base) !important; font-size: .88rem; color: var(--text-primary); transition: background .3s, color .3s; }
+
+  /* ── Scroll progress bar ── */
+  #scroll-progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--adsk), var(--now));
+    z-index: 9999; transition: width .1s linear;
+  }
+
+  /* ── Navbar ── */
+  .dash-nav {
+    background: linear-gradient(135deg, var(--bg-card) 0%, #1a2332 100%) !important;
+    border-bottom: 2px solid var(--border); padding: 14px 24px;
+    position: sticky; top: 3px; z-index: 1000;
+    backdrop-filter: blur(12px);
+  }
   .dash-nav .brand { font-size: 1.25rem; font-weight: 800; color: #58a6ff; }
   .dash-nav .sub   { font-size: .75rem; color: var(--muted); }
-  .nav-badge { background: var(--bg-card2); color: var(--warn); border: 1px solid var(--border);
-    border-radius: 20px; padding: 3px 12px; font-size: .72rem; font-weight: 700; }
+  .nav-badge {
+    background: var(--bg-card2); color: var(--warn); border: 1px solid var(--border);
+    border-radius: 20px; padding: 3px 12px; font-size: .72rem; font-weight: 700;
+  }
 
-  /* Cards */
-  .card { background: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; }
+  /* Live pulse dot */
+  .live-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--pos); margin-right: 5px;
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(63,185,80,.6); }
+    50%      { box-shadow: 0 0 0 6px rgba(63,185,80,0); }
+  }
+
+  /* ── Section jump nav ── */
+  .jump-nav {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 16px;
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  }
+  .jump-nav a {
+    color: var(--muted); font-size: .72rem; font-weight: 700; text-decoration: none;
+    text-transform: uppercase; letter-spacing: .8px; padding: 4px 10px;
+    border-radius: 20px; border: 1px solid transparent;
+    transition: all .2s;
+  }
+  .jump-nav a:hover, .jump-nav a.active {
+    color: #58a6ff; border-color: #58a6ff; background: rgba(88,166,255,.08);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bg-card) !important; border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.45) !important;
+  }
   .card-adsk { border-top: 3px solid var(--adsk) !important; }
   .card-now  { border-top: 3px solid var(--now)  !important; }
 
-  /* Ticker & price */
+  /* ── Ticker & price ── */
   .ticker-adsk { font-size: 1.3rem; font-weight: 900; color: var(--adsk); }
   .ticker-now  { font-size: 1.3rem; font-weight: 900; color: var(--now); }
   .price-big   { font-size: 2.1rem; font-weight: 800; }
@@ -57,9 +168,11 @@
   .price-dn    { color: var(--neg); }
   .co-sub      { color: var(--muted); font-size: .75rem; }
 
-  /* Metric rows inside cards */
-  .mrow { display: flex; justify-content: space-between; padding: 5px 0;
-    border-bottom: 1px solid var(--border); font-size: .82rem; }
+  /* ── Metric rows ── */
+  .mrow {
+    display: flex; justify-content: space-between; padding: 5px 0;
+    border-bottom: 1px solid var(--border); font-size: .82rem;
+  }
   .mrow:last-child { border-bottom: none; }
   .mrow .ml { color: var(--muted); }
   .mrow .mv { font-weight: 700; }
@@ -71,82 +184,245 @@
   .c-now  { color: var(--now);  }
   .c-muted{ color: var(--muted);}
 
-  /* Section title */
-  .sec-title { font-size: .72rem; font-weight: 800; color: var(--warn);
+  /* ── Section title ── */
+  .sec-title {
+    font-size: .72rem; font-weight: 800; color: var(--warn);
     text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px;
-    border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
 
-  /* Tables */
-  .table { color: #e6edf3; font-size: .82rem; }
+  /* ── Tables ── */
+  .table { color: var(--text-primary); font-size: .82rem; }
   .table thead tr { background: var(--bg-card2); }
-  .table thead th { color: var(--muted); font-size: .7rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: .5px; border-color: var(--border); padding: 9px 12px; }
+  .table thead th {
+    color: var(--muted); font-size: .7rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .5px; border-color: var(--border); padding: 9px 12px;
+  }
   .table td { border-color: var(--border); padding: 8px 12px; vertical-align: middle; }
+  .table-hover tbody tr { transition: background .15s; }
   .table-hover tbody tr:hover { background: var(--bg-card2); }
   .row-pos { background: var(--pos-dim);  }
   .row-neg { background: var(--neg-dim);  }
   .row-warn{ background: var(--warn-dim); }
 
-  /* Badges */
-  .bdg { display: inline-block; padding: 2px 9px; border-radius: 20px;
-    font-size: .7rem; font-weight: 800; }
+  /* ── Badges ── */
+  .bdg {
+    display: inline-block; padding: 2px 9px; border-radius: 20px;
+    font-size: .7rem; font-weight: 800; cursor: default;
+  }
   .bdg-pos  { background: var(--pos-dim);  color: var(--pos);  border: 1px solid var(--pos); }
   .bdg-neg  { background: var(--neg-dim);  color: var(--neg);  border: 1px solid var(--neg); }
   .bdg-warn { background: var(--warn-dim); color: var(--warn); border: 1px solid var(--warn); }
   .bdg-blue { background: rgba(88,166,255,.12); color: #58a6ff; border: 1px solid #58a6ff; }
   .bdg-adsk { background: var(--adsk-dim); color: var(--adsk); border: 1px solid var(--adsk); }
   .bdg-now  { background: var(--now-dim);  color: var(--now);  border: 1px solid var(--now); }
-  .tag-adsk { background: var(--adsk); color: #000; border-radius: 4px;
-    padding: 1px 6px; font-size: .68rem; font-weight: 900; }
-  .tag-now  { background: var(--now);  color: #000; border-radius: 4px;
-    padding: 1px 6px; font-size: .68rem; font-weight: 900; }
+  .tag-adsk {
+    background: var(--adsk); color: #000; border-radius: 4px;
+    padding: 1px 6px; font-size: .68rem; font-weight: 900;
+  }
+  .tag-now  {
+    background: var(--now);  color: #000; border-radius: 4px;
+    padding: 1px 6px; font-size: .68rem; font-weight: 900;
+  }
 
-  /* Chart wrappers */
-  .chart-wrap { background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 18px; }
+  /* ── Chart wrappers ── */
+  .chart-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px;
+    transition: box-shadow .22s;
+  }
+  .chart-wrap:hover { box-shadow: 0 4px 24px rgba(0,0,0,.4); }
   .chart-label { font-size: .78rem; color: var(--muted); margin-bottom: 6px; }
+  .zoom-hint {
+    font-size: .68rem; color: var(--muted); text-align: right;
+    margin-top: 6px; opacity: .7;
+  }
 
-  /* Progress bar custom */
+  /* ── Progress bar ── */
   .rating-bar .progress { height: 6px; background: var(--bg-card2); border-radius: 4px; }
 
-  /* Verdict box */
-  .verdict-adsk { background: #0d1f0d; border-left: 5px solid var(--adsk); border-radius: 8px; padding: 18px; }
-  .verdict-now  { background: #091f1a; border-left: 5px solid var(--now);  border-radius: 8px; padding: 18px; }
+  /* ── Verdict box ── */
+  .verdict-adsk {
+    background: var(--verdict-adsk-bg); border-left: 5px solid var(--adsk);
+    border-radius: 8px; padding: 18px;
+    transition: background .3s, box-shadow .22s;
+  }
+  .verdict-adsk:hover { box-shadow: 0 4px 20px rgba(240,165,0,.15); }
+  .verdict-now  {
+    background: var(--verdict-now-bg); border-left: 5px solid var(--now);
+    border-radius: 8px; padding: 18px;
+    transition: background .3s, box-shadow .22s;
+  }
+  .verdict-now:hover { box-shadow: 0 4px 20px rgba(0,212,170,.15); }
   .verdict-title { font-size: 1.1rem; font-weight: 900; }
   .star-adsk { color: var(--adsk); }
   .star-now  { color: var(--now);  }
 
-  /* Event dot legend */
+  /* ── Event dot legend ── */
   .ev-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
   .ev-pos { background: var(--pos); }
   .ev-neg { background: var(--neg); }
 
-  /* Source link */
+  /* ── Source link ── */
   .src-link { color: #58a6ff; font-size: .75rem; }
   .src-link:hover { text-decoration: underline; }
 
-  /* KPI icon box */
-  .kpi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex;
-    align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  /* ── KPI icon box ── */
+  .kpi-icon {
+    width: 36px; height: 36px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
   .kpi-adsk { background: var(--adsk-dim); color: var(--adsk); }
   .kpi-now  { background: var(--now-dim);  color: var(--now);  }
   .kpi-pos  { background: var(--pos-dim);  color: var(--pos);  }
   .kpi-neg  { background: var(--neg-dim);  color: var(--neg);  }
 
-  /* Scrollbar */
+  /* ── Scrollbar ── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg-base); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* Disclaimer */
-  .disclaimer { background: var(--bg-card2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 12px 16px; font-size: .74rem; color: var(--muted); line-height: 1.6; }
+  /* ── Disclaimer ── */
+  .disclaimer {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px; font-size: .74rem;
+    color: var(--muted); line-height: 1.6;
+  }
 
-  /* Responsive tweaks */
-  @media (max-width: 768px) { .price-big { font-size: 1.6rem; } }
+  /* ── Back-to-top ── */
+  #back-to-top {
+    position: fixed; bottom: 28px; right: 24px;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--adsk), var(--now));
+    color: #000; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s, transform .3s;
+    z-index: 998; box-shadow: 0 4px 16px rgba(0,0,0,.5);
+  }
+  #back-to-top.visible { opacity: 1; pointer-events: auto; }
+  #back-to-top:hover { transform: translateY(-3px); }
+
+  /* ── Chart reset zoom btn ── */
+  .chart-reset-btn {
+    font-size: .68rem; color: var(--muted); background: var(--bg-card2);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 8px; cursor: pointer; transition: all .2s;
+  }
+  .chart-reset-btn:hover { color: #58a6ff; border-color: #58a6ff; }
+
+  /* ── Tippy dark overrides ── */
+  .tippy-box[data-theme~='stock'] {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: .74rem;
+    max-width: 260px;
+  }
+  .tippy-box[data-theme~='stock'] .tippy-arrow { color: var(--border); }
+
+  /* ── Theme toggle button ── */
+  #theme-toggle {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; transition: all .2s; flex-shrink: 0;
+  }
+  #theme-toggle:hover { color: var(--warn); border-color: var(--warn); transform: rotate(20deg); }
+
+  /* ── Chart type + indicator toolbar ── */
+  .chart-toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+  }
+  .toolbar-group { display: flex; gap: 4px; align-items: center; }
+  .toolbar-label { font-size: .68rem; color: var(--muted); font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px; margin-right: 2px; }
+  .toolbar-sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+  .ct-btn {
+    padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); cursor: pointer;
+    font-size: .72rem; font-weight: 700; transition: all .2s; white-space: nowrap;
+  }
+  .ct-btn.active { background: rgba(163,113,247,.15); color: var(--purple); border-color: var(--purple); }
+  .ct-btn:hover:not(.active) { border-color: var(--muted); color: var(--text-primary); }
+  .ind-btn {
+    padding: 4px 11px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); cursor: pointer;
+    font-size: .72rem; font-weight: 700; transition: all .2s; white-space: nowrap;
+  }
+  .ind-btn.active { background: rgba(88,166,255,.15); color: #58a6ff; border-color: #58a6ff; }
+  .ind-btn:hover:not(.active) { border-color: var(--muted); color: var(--text-primary); }
+
+  /* ── RSI sub-chart panel ── */
+  .rsi-panel { margin-top: 10px; display: none; }
+  .rsi-panel.visible { display: block; }
+  .rsi-label { font-size: .68rem; color: var(--muted); margin-bottom: 4px; }
+  .rsi-panel canvas { max-height: 90px; }
+
+  /* ── Pattern annotation badge ── */
+  .pat-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font-size: .68rem; }
+  .pat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 3px; }
+
+  /* ── S/R Card ── */
+  .sr-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; margin-bottom: 20px;
+  }
+  .sr-title { font-size: .7rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+  .sr-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid var(--border); font-size: .8rem; }
+  .sr-row:last-child { border-bottom: none; }
+  .sr-level { font-weight: 700; font-size: .82rem; }
+  .sr-sup { color: var(--pos); }
+  .sr-res { color: var(--neg); }
+  .sr-key { color: var(--warn); }
+  .sr-badge { font-size: .65rem; padding: 1px 7px; border-radius: 20px; font-weight: 800; }
+  .sr-badge-s { background: var(--pos-dim); color: var(--pos); border: 1px solid var(--pos); }
+  .sr-badge-r { background: var(--neg-dim); color: var(--neg); border: 1px solid var(--neg); }
+  .sr-badge-k { background: var(--warn-dim); color: var(--warn); border: 1px solid var(--warn); }
+
+  /* ── VP description panel ── */
+  .vp-summary {
+    background: var(--bg-card2); border-left: 3px solid var(--border);
+    border-radius: 0 8px 8px 0; padding: 12px 14px; margin-top: 10px;
+    font-size: .78rem; line-height: 1.65;
+  }
+  .vp-finding { display: flex; gap: 8px; margin-top: 6px; font-size: .77rem; }
+  .vp-finding i { margin-top: 2px; flex-shrink: 0; }
+
+  /* ── Chart range toggle ── */
+  .range-toggle { display: flex; gap: 4px; flex-wrap: wrap; }
+  .range-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--bg-card2); color: var(--muted); cursor: pointer;
+    font-size: .73rem; font-weight: 700; transition: all .2s; white-space: nowrap;
+  }
+  .range-btn.active { background: rgba(88,166,255,.15); color: #58a6ff; border-color: #58a6ff; }
+  .range-btn:hover:not(.active) { border-color: var(--muted); color: var(--text-primary); }
+  .range-label {
+    font-size: .68rem; color: var(--muted); text-align: center;
+    margin-top: 5px; font-style: italic; letter-spacing: .3px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .price-big { font-size: 1.6rem; }
+    .jump-nav { display: none; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Scroll progress -->
+<div id="scroll-progress"></div>
+
+<!-- Back-to-top -->
+<button id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></button>
 
 <!-- ═══ NAVBAR ═══ -->
 <div class="dash-nav d-flex align-items-start justify-content-between flex-wrap gap-2">
@@ -155,19 +431,35 @@
     <div class="sub mt-1"><i class="fa fa-circle-info me-1"></i>Technical · Fundamental · News Impact · Analyst Ratings · Verdict</div>
   </div>
   <div class="d-flex gap-2 align-items-center flex-wrap">
-    <span class="nav-badge"><i class="fa fa-calendar-day me-1"></i>June 15, 2026</span>
+    <span class="nav-badge"><span class="live-dot"></span>June 15, 2026</span>
     <span class="nav-badge"><i class="fa fa-database me-1"></i>SEC · Yahoo Finance · StockAnalysis · Barchart · TipRanks</span>
+    <button id="theme-toggle" title="Switch to light mode"><i class="fa fa-sun"></i></button>
   </div>
 </div>
 
 <div class="container-fluid px-4 py-4">
 
+<!-- ═══ SECTION JUMP NAV ═══ -->
+<div class="jump-nav" id="jump-nav">
+  <a href="#sec-snapshot"><i class="fa fa-bolt me-1"></i>Snapshot</a>
+  <a href="#sec-price"><i class="fa fa-chart-line me-1"></i>Price Charts</a>
+  <a href="#sec-sr"><i class="fa fa-shield-halved me-1"></i>S/R Levels</a>
+  <a href="#sec-volume"><i class="fa fa-chart-bar me-1"></i>Volume Profile</a>
+  <a href="#sec-technical"><i class="fa fa-magnifying-glass-chart me-1"></i>Technicals</a>
+  <a href="#sec-fundamentals"><i class="fa fa-file-invoice-dollar me-1"></i>Fundamentals</a>
+  <a href="#sec-corporate"><i class="fa fa-landmark me-1"></i>Corporate Actions</a>
+  <a href="#sec-news"><i class="fa fa-newspaper me-1"></i>News</a>
+  <a href="#sec-analysts"><i class="fa fa-user-tie me-1"></i>Analysts</a>
+  <a href="#sec-valuation"><i class="fa fa-scale-balanced me-1"></i>Valuation</a>
+  <a href="#sec-verdict"><i class="fa fa-gavel me-1"></i>Verdict</a>
+</div>
+
 <!-- ═══ SNAPSHOT CARDS ═══ -->
-<div class="sec-title"><i class="fa fa-bolt me-2"></i>Snapshot — Key Metrics</div>
+<div class="sec-title" id="sec-snapshot"><i class="fa fa-bolt me-2"></i>Snapshot — Key Metrics</div>
 <div class="row g-3 mb-4">
 
   <!-- ADSK Card -->
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-right" data-aos-duration="600">
     <div class="card card-adsk h-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -177,12 +469,12 @@
           </div>
           <div class="kpi-icon kpi-adsk"><i class="fa fa-cube"></i></div>
         </div>
-        <div class="price-big price-dn">$198.43</div>
+        <div class="price-big price-dn">$<span id="adsk-price">198.43</span></div>
         <div class="c-neg mb-3" style="font-size:.85rem">
           <i class="fa fa-caret-down me-1"></i>-$0.62 &nbsp;(-0.31%) &nbsp;
           <span class="c-muted" style="font-size:.75rem">Jun 12 close</span>
         </div>
-        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-adsk">$52.4B</span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-adsk">$<span id="adsk-cap">52.4</span>B</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-chart-area me-1 c-muted"></i>52-Wk Range</span><span class="mv">$168.20 – $276.58</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-bars-progress me-1 c-muted"></i>Avg Volume (30d)</span><span class="mv">2.6M shares</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-percent me-1 c-muted"></i>P/E Ratio (TTM)</span><span class="mv c-warn">44.1×</span></div>
@@ -190,14 +482,14 @@
         <div class="mrow"><span class="ml"><i class="fa fa-arrow-trend-up me-1 c-muted"></i>FY2026 Revenue</span><span class="mv c-pos">$7.21B <span class="c-muted fw-normal">(+17.5% YoY)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-coins me-1 c-muted"></i>Gross Margin</span><span class="mv c-pos">90.9%</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-star me-1 c-muted"></i>Analyst Rating</span><span class="mv c-pos"><i class="fa fa-star c-adsk"></i> Strong Buy (32)</span></div>
-        <div class="mrow"><span class="ml"><i class="fa fa-bullseye me-1 c-muted"></i>Avg Price Target</span><span class="mv c-blue">$319.27 <span class="c-pos fw-normal">(+60.9%)</span></span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-bullseye me-1 c-muted"></i>Avg Price Target</span><span class="mv c-blue">$<span id="adsk-target">319.27</span> <span class="c-pos fw-normal">(+60.9%)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-shield-halved me-1 c-muted"></i>Support / Resistance</span><span class="mv">$188–196 / $215–225</span></div>
       </div>
     </div>
   </div>
 
   <!-- NOW Card -->
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-left" data-aos-duration="600">
     <div class="card card-now h-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -207,12 +499,12 @@
           </div>
           <div class="kpi-icon kpi-now"><i class="fa fa-gears"></i></div>
         </div>
-        <div class="price-big price-up">$102.13</div>
+        <div class="price-big price-up">$<span id="now-price">102.13</span></div>
         <div class="c-pos mb-3" style="font-size:.85rem">
           <i class="fa fa-caret-up me-1"></i>+$0.91 &nbsp;(+0.90%) &nbsp;
           <span class="c-muted" style="font-size:.75rem">Jun 13 close</span>
         </div>
-        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-now">$105.2B</span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-now">$<span id="now-cap">105.2</span>B</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-chart-area me-1 c-muted"></i>52-Wk Range</span><span class="mv">$81.24 – $211.48</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-bars-progress me-1 c-muted"></i>Avg Volume (30d)</span><span class="mv">4.8M shares</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-percent me-1 c-muted"></i>P/E Ratio (TTM)</span><span class="mv c-warn">62.1×</span></div>
@@ -220,7 +512,7 @@
         <div class="mrow"><span class="ml"><i class="fa fa-arrow-trend-up me-1 c-muted"></i>Q1 FY26 Revenue</span><span class="mv c-pos">$3.77B <span class="c-muted fw-normal">(+22% YoY)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-coins me-1 c-muted"></i>Sub. Gross Margin</span><span class="mv c-pos">80%</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-star me-1 c-muted"></i>Analyst Rating</span><span class="mv c-pos"><i class="fa fa-star c-now"></i> Strong Buy (48)</span></div>
-        <div class="mrow"><span class="ml"><i class="fa fa-bullseye me-1 c-muted"></i>Avg Price Target</span><span class="mv c-blue">$149.62 <span class="c-pos fw-normal">(+46.5%)</span></span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-bullseye me-1 c-muted"></i>Avg Price Target</span><span class="mv c-blue">$<span id="now-target">149.62</span> <span class="c-pos fw-normal">(+46.5%)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-shield-halved me-1 c-muted"></i>Support / Resistance</span><span class="mv">$94–98 / $110–143</span></div>
       </div>
     </div>
@@ -228,59 +520,189 @@
 </div>
 
 <!-- ═══ PRICE CHARTS ═══ -->
-<div class="sec-title mt-2"><i class="fa fa-chart-line me-2"></i>Price Action + VWAP + Volume (May 19 – Jun 13, 2026)</div>
+<div class="sec-title mt-2" id="sec-price"><i class="fa fa-chart-line me-2"></i>Price Action + VWAP + Volume (May 19 – Jun 13, 2026)</div>
 
-<!-- Legend -->
-<div class="d-flex flex-wrap gap-3 mb-3" style="font-size:.78rem">
-  <span><span class="ev-dot" style="background:var(--adsk)"></span>ADSK Price</span>
-  <span><span class="ev-dot" style="background:var(--now)"></span>NOW Price</span>
-  <span style="color:var(--purple)"><i class="fa fa-minus me-1"></i>VWAP (dashed)</span>
-  <span><span class="ev-dot ev-neg"></span><span class="c-neg">Negative Event Line</span></span>
-  <span><span class="ev-dot ev-pos"></span><span class="c-pos">Positive Event Line</span></span>
-  <span style="color:var(--muted)"><i class="fa fa-chart-bar me-1"></i>Volume bars (secondary axis)</span>
+<!-- Unified chart toolbar -->
+<div class="chart-toolbar">
+  <!-- Range -->
+  <div class="toolbar-group">
+    <span class="toolbar-label">Range</span>
+    <div class="range-toggle" id="range-toggle">
+      <button class="range-btn active" data-range="daily"><i class="fa fa-calendar-day me-1"></i>Daily</button>
+      <button class="range-btn" data-range="weekly"><i class="fa fa-calendar-week me-1"></i>Weekly</button>
+      <button class="range-btn" data-range="hourly"><i class="fa fa-clock me-1"></i>Hourly</button>
+    </div>
+  </div>
+  <div class="toolbar-sep"></div>
+  <!-- Chart type -->
+  <div class="toolbar-group">
+    <span class="toolbar-label">Style</span>
+    <button class="ct-btn active" data-type="line"><i class="fa fa-chart-line me-1"></i>Line</button>
+    <button class="ct-btn" data-type="candlestick"><i class="fa fa-align-justify me-1"></i>Candle</button>
+    <button class="ct-btn" data-type="ohlc"><i class="fa fa-bars me-1"></i>OHLC</button>
+  </div>
+  <div class="toolbar-sep"></div>
+  <!-- Indicators -->
+  <div class="toolbar-group flex-wrap">
+    <span class="toolbar-label">Indicators</span>
+    <button class="ind-btn" data-ind="rsi5">RSI 5</button>
+    <button class="ind-btn" data-ind="rsi10">RSI 10</button>
+    <button class="ind-btn" data-ind="rsi20">RSI 20</button>
+    <button class="ind-btn" data-ind="bb"><i class="fa fa-circle-dot me-1"></i>Bollinger</button>
+    <button class="ind-btn" data-ind="fib"><i class="fa fa-ruler-vertical me-1"></i>Fibonacci</button>
+  </div>
 </div>
+<div class="range-label mb-3" id="range-label">Daily closes · May 19 – Jun 13, 2026 · Candle patterns shown on daily view</div>
 
-<div class="row g-3 mb-4">
-  <div class="col-md-6">
+<div class="row g-3 mb-1">
+  <div class="col-md-6" data-aos="fade-up" data-aos-duration="500">
     <div class="chart-wrap">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold c-adsk"><i class="fa fa-cube me-1"></i>ADSK — Price &amp; VWAP</span>
-        <span class="bdg-adsk bdg"><i class="fa fa-triangle-exclamation me-1"></i>Bearish Trend</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="bdg-adsk bdg"><i class="fa fa-triangle-exclamation me-1"></i>Bearish Trend</span>
+          <button class="chart-reset-btn" onclick="adskChart.resetZoom()"><i class="fa fa-magnifying-glass-minus me-1"></i>Reset</button>
+        </div>
       </div>
       <canvas id="adskChart"></canvas>
+      <!-- RSI sub-panel -->
+      <div class="rsi-panel" id="adsk-rsi-panel">
+        <div class="rsi-label" id="adsk-rsi-label">RSI</div>
+        <canvas id="adskRSI"></canvas>
+      </div>
+      <!-- Pattern legend (daily only) -->
+      <div class="pat-legend" id="adsk-pat-legend" style="display:none">
+        <span><span class="pat-dot" style="background:#f85149"></span><span class="c-muted">Shooting Star</span></span>
+        <span><span class="pat-dot" style="background:#ff6b00"></span><span class="c-muted">Bearish Marubozu</span></span>
+        <span><span class="pat-dot" style="background:#ffa657"></span><span class="c-muted">Doji (Exhaustion)</span></span>
+        <span><span class="pat-dot" style="background:#3fb950"></span><span class="c-muted">Hammer (Reversal)</span></span>
+      </div>
+      <div class="zoom-hint"><i class="fa fa-hand-pointer me-1"></i>Scroll to zoom · Drag to pan</div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
     <div class="chart-wrap">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold c-now"><i class="fa fa-gears me-1"></i>NOW — Price &amp; VWAP</span>
-        <span class="bdg-now bdg"><i class="fa fa-arrow-up me-1"></i>Bullish Momentum</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="bdg-now bdg"><i class="fa fa-arrow-up me-1"></i>Bullish Momentum</span>
+          <button class="chart-reset-btn" onclick="nowChart.resetZoom()"><i class="fa fa-magnifying-glass-minus me-1"></i>Reset</button>
+        </div>
       </div>
       <canvas id="nowChart"></canvas>
+      <!-- RSI sub-panel -->
+      <div class="rsi-panel" id="now-rsi-panel">
+        <div class="rsi-label" id="now-rsi-label">RSI</div>
+        <canvas id="nowRSI"></canvas>
+      </div>
+      <!-- Pattern legend (daily only) -->
+      <div class="pat-legend" id="now-pat-legend" style="display:none">
+        <span><span class="pat-dot" style="background:#3fb950"></span><span class="c-muted">Bullish Engulfing</span></span>
+        <span><span class="pat-dot" style="background:#f85149"></span><span class="c-muted">Shooting Star (OB)</span></span>
+        <span><span class="pat-dot" style="background:#ffa657"></span><span class="c-muted">Doji (Exhaustion)</span></span>
+      </div>
+      <div class="zoom-hint"><i class="fa fa-hand-pointer me-1"></i>Scroll to zoom · Drag to pan</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S/R LEVELS ═══ -->
+<div class="sec-title mt-3" id="sec-sr"><i class="fa fa-shield-halved me-2"></i>Support &amp; Resistance — Current Levels (Daily &amp; Weekly)</div>
+<div class="row g-3 mb-4" data-aos="fade-up" data-aos-duration="500">
+
+  <!-- ADSK S/R -->
+  <div class="col-md-6">
+    <div class="sr-card">
+      <div class="fw-bold c-adsk mb-2"><i class="fa fa-cube me-1"></i>ADSK — Autodesk, Inc. &nbsp;<span class="bdg-neg bdg" style="font-size:.65rem">Bearish Structure</span></div>
+      <div class="row g-0">
+        <div class="col-6 pe-2">
+          <div class="sr-title"><i class="fa fa-calendar-day me-1"></i>Daily</div>
+          <div class="sr-row"><span class="c-muted">R3</span><span class="sr-level sr-res">$225–234 <span class="sr-badge sr-badge-r">Breakdown Zone</span></span></div>
+          <div class="sr-row"><span class="c-muted">R2</span><span class="sr-level sr-res">$215–220 <span class="sr-badge sr-badge-k">VWAP + POC</span></span></div>
+          <div class="sr-row"><span class="c-muted">R1</span><span class="sr-level sr-res">$203–205 <span class="sr-badge sr-badge-r">Immediate</span></span></div>
+          <div class="sr-row" style="background:var(--warn-dim)"><span class="c-warn fw-bold">NOW</span><span class="sr-level sr-key">$197–199 <span class="sr-badge sr-badge-k">Current</span></span></div>
+          <div class="sr-row"><span class="c-muted">S1</span><span class="sr-level sr-sup">$193–196 <span class="sr-badge sr-badge-s">Test Zone</span></span></div>
+          <div class="sr-row"><span class="c-muted">S2</span><span class="sr-level sr-sup">$188 <span class="sr-badge sr-badge-s">Major</span></span></div>
+          <div class="sr-row"><span class="c-muted">S3</span><span class="sr-level sr-sup">$180 <span class="sr-badge sr-badge-s">Extreme</span></span></div>
+        </div>
+        <div class="col-6 ps-2" style="border-left:1px solid var(--border)">
+          <div class="sr-title"><i class="fa fa-calendar-week me-1"></i>Weekly</div>
+          <div class="sr-row"><span class="c-muted">R3</span><span class="sr-level sr-res">$276.58 <span class="sr-badge sr-badge-r">52-Wk High</span></span></div>
+          <div class="sr-row"><span class="c-muted">R2</span><span class="sr-level sr-res">$255 <span class="sr-badge sr-badge-r">Weekly Top</span></span></div>
+          <div class="sr-row"><span class="c-muted">R1</span><span class="sr-level sr-res">$225 <span class="sr-badge sr-badge-r">Weekly Close Res</span></span></div>
+          <div class="sr-row" style="background:var(--warn-dim)"><span class="c-warn fw-bold">NOW</span><span class="sr-level sr-key">$197–199</span></div>
+          <div class="sr-row"><span class="c-muted">S1</span><span class="sr-level sr-sup">$188 <span class="sr-badge sr-badge-s">Wkly Structure</span></span></div>
+          <div class="sr-row"><span class="c-muted">S2</span><span class="sr-level sr-sup">$168.20 <span class="sr-badge sr-badge-s">52-Wk Low</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOW S/R -->
+  <div class="col-md-6">
+    <div class="sr-card">
+      <div class="fw-bold c-now mb-2"><i class="fa fa-gears me-1"></i>NOW — ServiceNow, Inc. &nbsp;<span class="bdg-pos bdg" style="font-size:.65rem">Bullish Structure</span></div>
+      <div class="row g-0">
+        <div class="col-6 pe-2">
+          <div class="sr-title"><i class="fa fa-calendar-day me-1"></i>Daily</div>
+          <div class="sr-row"><span class="c-muted">R3</span><span class="sr-level sr-res">$143 <span class="sr-badge sr-badge-r">200d SMA</span></span></div>
+          <div class="sr-row"><span class="c-muted">R2</span><span class="sr-level sr-res">$115 <span class="sr-badge sr-badge-r">Measured Move</span></span></div>
+          <div class="sr-row"><span class="c-muted">R1</span><span class="sr-level sr-res">$105–108 <span class="sr-badge sr-badge-k">VAH + OB Zone</span></span></div>
+          <div class="sr-row" style="background:var(--warn-dim)"><span class="c-warn fw-bold">NOW</span><span class="sr-level sr-key">$101–102 <span class="sr-badge sr-badge-k">At POC</span></span></div>
+          <div class="sr-row"><span class="c-muted">S1</span><span class="sr-level sr-sup">$98–100 <span class="sr-badge sr-badge-s">VWAP + HVN</span></span></div>
+          <div class="sr-row"><span class="c-muted">S2</span><span class="sr-level sr-sup">$93–94 <span class="sr-badge sr-badge-s">Swing Low</span></span></div>
+          <div class="sr-row"><span class="c-muted">S3</span><span class="sr-level sr-sup">$88–90 <span class="sr-badge sr-badge-s">Stop Zone</span></span></div>
+        </div>
+        <div class="col-6 ps-2" style="border-left:1px solid var(--border)">
+          <div class="sr-title"><i class="fa fa-calendar-week me-1"></i>Weekly</div>
+          <div class="sr-row"><span class="c-muted">R3</span><span class="sr-level sr-res">$211.48 <span class="sr-badge sr-badge-r">52-Wk High</span></span></div>
+          <div class="sr-row"><span class="c-muted">R2</span><span class="sr-level sr-res">$143 <span class="sr-badge sr-badge-r">200d SMA</span></span></div>
+          <div class="sr-row"><span class="c-muted">R1</span><span class="sr-level sr-res">$110–115 <span class="sr-badge sr-badge-r">Weekly Breakout</span></span></div>
+          <div class="sr-row" style="background:var(--warn-dim)"><span class="c-warn fw-bold">NOW</span><span class="sr-level sr-key">$101–102</span></div>
+          <div class="sr-row"><span class="c-muted">S1</span><span class="sr-level sr-sup">$94–98 <span class="sr-badge sr-badge-s">Weekly Base</span></span></div>
+          <div class="sr-row"><span class="c-muted">S2</span><span class="sr-level sr-sup">$81.24 <span class="sr-badge sr-badge-s">52-Wk Low</span></span></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ═══ VOLUME PROFILE ═══ -->
-<div class="sec-title"><i class="fa fa-chart-bar me-2"></i>Volume Profile — Price Level Concentration (30-Day POC Highlighted)</div>
-<div class="row g-3 mb-4">
-  <div class="col-md-6">
+<div class="sec-title" id="sec-volume"><i class="fa fa-chart-bar me-2"></i>Volume Profile — Price Level Concentration (30-Day POC Highlighted)</div>
+<div class="row g-3 mb-2">
+  <div class="col-md-6" data-aos="fade-right" data-aos-duration="500">
     <div class="chart-wrap">
-      <div class="mb-2 fw-bold c-adsk"><i class="fa fa-map-pin me-1"></i>ADSK Volume Profile &nbsp;<span class="bdg-warn bdg">POC: $215–220</span></div>
+      <div class="mb-2 fw-bold c-adsk"><i class="fa fa-map-pin me-1"></i>ADSK Volume Profile &nbsp;<span class="bdg-warn bdg">POC: $215–220 &nbsp;·&nbsp; 9.3M shares</span></div>
       <canvas id="adskVP" style="max-height:220px"></canvas>
+      <div class="vp-summary">
+        <strong class="c-warn"><i class="fa fa-triangle-exclamation me-1"></i>What is Volume Profile?</strong>
+        Shows how many shares traded at each price level over 30 days. High bars = price spent significant time there (institutional activity). POC = Point of Control — the single price level with the most traded volume.
+        <div class="vp-finding"><i class="fa fa-circle-xmark c-neg"></i><span><strong class="c-neg">Distribution Pattern:</strong> The heaviest trading ($215–225, 15.6M shares) is well above current price ($198). This creates a heavy overhead supply — sellers who bought near the POC will sell into any rally back to $215.</span></div>
+        <div class="vp-finding"><i class="fa fa-triangle-exclamation c-warn"></i><span><strong class="c-warn">VAH $225 / VAL $200:</strong> Value Area (70% of volume) ranges $200–$225. Price is at the very bottom of value — potential bounce zone but also potential breakdown.</span></div>
+        <div class="vp-finding"><i class="fa fa-circle-info c-blue"></i><span><strong class="c-blue">Low Volume Node (LVN):</strong> The $230–235 zone (4.1M) was passed through quickly — if price ever rallies back, expect fast movement through that zone.</span></div>
+        <div class="vp-finding"><i class="fa fa-bullseye c-pos"></i><span><strong class="c-pos">Key Finding:</strong> Must reclaim $205 first → then $215 (POC) to flip distribution to accumulation. Bears remain in control while price trades below $205.</span></div>
+      </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-left" data-aos-duration="500">
     <div class="chart-wrap">
-      <div class="mb-2 fw-bold c-now"><i class="fa fa-map-pin me-1"></i>NOW Volume Profile &nbsp;<span class="bdg-now bdg">POC: $100–105</span></div>
+      <div class="mb-2 fw-bold c-now"><i class="fa fa-map-pin me-1"></i>NOW Volume Profile &nbsp;<span class="bdg-now bdg">POC: $100–105 &nbsp;·&nbsp; 12.1M shares</span></div>
       <canvas id="nowVP" style="max-height:220px"></canvas>
+      <div class="vp-summary">
+        <strong class="c-pos"><i class="fa fa-circle-check me-1"></i>Accumulation Signal Detected</strong>
+        NOW's volume profile shows a textbook accumulation structure — heavy volume concentrated in a constructive zone just below current breakout, with low resistance above.
+        <div class="vp-finding"><i class="fa fa-circle-check c-pos"></i><span><strong class="c-pos">Bullish Accumulation:</strong> Price is currently <em>trading inside the POC zone</em> ($100–105, 12.1M shares) — this is healthy consolidation with strong institutional backing. Smart money accumulated here.</span></div>
+        <div class="vp-finding"><i class="fa fa-shield-halved c-pos"></i><span><strong class="c-pos">HVN Support Floor:</strong> The $96–100 zone (10.2M shares) is a rock-solid support layer — any dip to $98 should find massive buy-side absorption from the value area.</span></div>
+        <div class="vp-finding"><i class="fa fa-rocket c-warn"></i><span><strong class="c-warn">LVN Breakout Zone:</strong> Above $105, only 2.3M shares traded — this is a Low Volume Node meaning very little selling resistance. A breakout above $108 could accelerate quickly to $115+.</span></div>
+        <div class="vp-finding"><i class="fa fa-bullseye c-now"></i><span><strong class="c-now">Key Finding:</strong> NOW is poised for either consolidation ($98–$108 range) or breakout ($108+ → $115 target). Bulls need a daily close above $106 with high volume confirmation.</span></div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ═══ TECHNICAL ANALYSIS ═══ -->
-<div class="sec-title"><i class="fa fa-magnifying-glass-chart me-2"></i>Technical Analysis — Indicator Comparison</div>
-<div class="card mb-4">
+<div class="sec-title" id="sec-technical"><i class="fa fa-magnifying-glass-chart me-2"></i>Technical Analysis — Indicator Comparison</div>
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -293,13 +715,13 @@
         </tr></thead>
         <tbody>
           <tr><td><i class="fa fa-dollar-sign me-1 c-muted"></i>Current Price</td><td class="c-adsk fw-bold">$198.43</td><td><span class="bdg bdg-blue">REFERENCE</span></td><td class="c-now fw-bold">$102.13</td><td><span class="bdg bdg-blue">REFERENCE</span></td></tr>
-          <tr class="row-neg"><td><i class="fa fa-wave-square me-1 c-muted"></i>8-Day EMA</td><td class="c-neg">~$207.20 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-pos">$98.84 (price above)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>BULLISH</span></td></tr>
+          <tr class="row-neg"><td><i class="fa fa-wave-square me-1 c-muted"></i>8-Day EMA <span class="bdg bdg-blue tip-ema" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-neg">~$207.20 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-pos">$98.84 (price above)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>BULLISH</span></td></tr>
           <tr class="row-neg"><td><i class="fa fa-wave-square me-1 c-muted"></i>20-Day EMA</td><td class="c-neg">~$215.40 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-pos">$96.10 (price above)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>BULLISH</span></td></tr>
-          <tr class="row-neg"><td><i class="fa fa-chart-line me-1 c-muted"></i>50-Day SMA</td><td class="c-neg">~$225.80 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-pos">~$91.00 (price above)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>BULLISH</span></td></tr>
+          <tr class="row-neg"><td><i class="fa fa-chart-line me-1 c-muted"></i>50-Day SMA <span class="bdg bdg-blue tip-sma" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-neg">~$225.80 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-pos">~$91.00 (price above)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>BULLISH</span></td></tr>
           <tr class="row-neg"><td><i class="fa fa-chart-line me-1 c-muted"></i>200-Day SMA</td><td class="c-neg">~$244.10 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td><td class="c-neg">$142.75 (price below)</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>BEARISH</span></td></tr>
-          <tr><td><i class="fa fa-ruler-horizontal me-1 c-muted"></i>VWAP (30d)</td><td class="c-neg">$215.40 (price below)</td><td><span class="bdg bdg-neg">BELOW VWAP</span></td><td class="c-pos">$100.70 (price above)</td><td><span class="bdg bdg-pos">ABOVE VWAP</span></td></tr>
-          <tr class="row-warn"><td><i class="fa fa-gauge-high me-1 c-muted"></i>RSI (14)</td><td class="c-warn">~43 — approaching oversold</td><td><span class="bdg bdg-warn"><i class="fa fa-circle-half-stroke me-1"></i>NEUTRAL</span></td><td class="c-warn">~73 — overbought zone</td><td><span class="bdg bdg-warn"><i class="fa fa-triangle-exclamation me-1"></i>CAUTION</span></td></tr>
-          <tr class="row-neg"><td><i class="fa fa-arrows-left-right me-1 c-muted"></i>MACD</td><td class="c-neg">Bearish crossover (May 26)</td><td><span class="bdg bdg-neg"><i class="fa fa-xmark me-1"></i>BEARISH CROSS</span></td><td class="c-pos">Positive — building momentum</td><td><span class="bdg bdg-pos"><i class="fa fa-check me-1"></i>BULLISH</span></td></tr>
+          <tr><td><i class="fa fa-ruler-horizontal me-1 c-muted"></i>VWAP (30d) <span class="bdg bdg-blue tip-vwap" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-neg">$215.40 (price below)</td><td><span class="bdg bdg-neg">BELOW VWAP</span></td><td class="c-pos">$100.70 (price above)</td><td><span class="bdg bdg-pos">ABOVE VWAP</span></td></tr>
+          <tr class="row-warn"><td><i class="fa fa-gauge-high me-1 c-muted"></i>RSI (14) <span class="bdg bdg-blue tip-rsi" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-warn">~43 — approaching oversold</td><td><span class="bdg bdg-warn"><i class="fa fa-circle-half-stroke me-1"></i>NEUTRAL</span></td><td class="c-warn">~73 — overbought zone</td><td><span class="bdg bdg-warn"><i class="fa fa-triangle-exclamation me-1"></i>CAUTION</span></td></tr>
+          <tr class="row-neg"><td><i class="fa fa-arrows-left-right me-1 c-muted"></i>MACD <span class="bdg bdg-blue tip-macd" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-neg">Bearish crossover (May 26)</td><td><span class="bdg bdg-neg"><i class="fa fa-xmark me-1"></i>BEARISH CROSS</span></td><td class="c-pos">Positive — building momentum</td><td><span class="bdg bdg-pos"><i class="fa fa-check me-1"></i>BULLISH</span></td></tr>
           <tr><td><i class="fa fa-bars me-1 c-muted"></i>Volume Trend</td><td class="c-neg">High vol on down-days (distribution)</td><td><span class="bdg bdg-neg">DISTRIBUTION</span></td><td class="c-pos">High vol on up-days (accumulation)</td><td><span class="bdg bdg-pos">ACCUMULATION</span></td></tr>
           <tr><td><i class="fa fa-shield me-1 c-muted"></i>Support Zones</td><td>$196 / $188 / $180</td><td><span class="bdg bdg-blue">WATCH</span></td><td>$98 / $94 / $83</td><td><span class="bdg bdg-blue">WATCH</span></td></tr>
           <tr><td><i class="fa fa-wall me-1 c-muted"></i>Resistance Zones</td><td>$215 / $225 / $234</td><td><span class="bdg bdg-blue">RECLAIM</span></td><td>$110 / $130 / $143</td><td><span class="bdg bdg-blue">TARGETS</span></td></tr>
@@ -311,8 +733,8 @@
 </div>
 
 <!-- ═══ FUNDAMENTALS ═══ -->
-<div class="sec-title"><i class="fa fa-file-invoice-dollar me-2"></i>Fundamental Analysis — Revenue, Profit &amp; Financials</div>
-<div class="card mb-3">
+<div class="sec-title" id="sec-fundamentals"><i class="fa fa-file-invoice-dollar me-2"></i>Fundamental Analysis — Revenue, Profit &amp; Financials</div>
+<div class="card mb-3" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -325,7 +747,7 @@
           <tr class="row-pos"><td><i class="fa fa-coins me-1 c-muted"></i>Gross Profit Margin</td><td class="c-pos fw-bold">90.9% <span class="c-muted fw-normal">(FY2026: GP $6.556B)</span></td><td class="c-pos">80% <span class="c-muted fw-normal">(subscription gross)</span></td><td><span class="bdg bdg-adsk">ADSK Higher</span></td></tr>
           <tr><td><i class="fa fa-chart-pie me-1 c-muted"></i>Non-GAAP Op. Margin</td><td class="c-pos">~39% <span class="c-muted">(FY27 guided)</span></td><td class="c-warn">~30%+</td><td><span class="bdg bdg-adsk">ADSK</span></td></tr>
           <tr><td><i class="fa fa-calendar-check me-1 c-muted"></i>Full Year Revenue Guidance</td><td class="c-blue">$8.155–8.215B <span class="c-muted">(FY2027)</span></td><td class="c-blue">~$16–17B est. <span class="c-muted">(FY2026 run)</span></td><td><span class="bdg bdg-now">NOW Larger</span></td></tr>
-          <tr class="row-pos"><td><i class="fa fa-lock me-1 c-muted"></i>Current RPO (cRPO)</td><td class="c-muted">N/A (evolving model)</td><td class="c-pos fw-bold">$12.64B <span class="c-muted fw-normal">(+22.5% YoY)</span></td><td><span class="bdg bdg-now">NOW Advantage</span></td></tr>
+          <tr class="row-pos"><td><i class="fa fa-lock me-1 c-muted"></i>Current RPO (cRPO) <span class="bdg bdg-blue tip-rpo" style="font-size:.62rem;padding:1px 5px;cursor:help">?</span></td><td class="c-muted">N/A (evolving model)</td><td class="c-pos fw-bold">$12.64B <span class="c-muted fw-normal">(+22.5% YoY)</span></td><td><span class="bdg bdg-now">NOW Advantage</span></td></tr>
           <tr><td><i class="fa fa-dollar-sign me-1 c-muted"></i>GAAP EPS (Guidance)</td><td class="c-pos">$4.63–$5.14 <span class="c-muted">(FY2027)</span></td><td class="c-warn">~$1.65 est. <span class="c-muted">(post-split)</span></td><td><span class="bdg bdg-adsk">ADSK</span></td></tr>
           <tr><td><i class="fa fa-water me-1 c-muted"></i>Free Cash Flow</td><td class="c-pos">~$2.2B est.</td><td class="c-pos">~$3.5B est.</td><td><span class="bdg bdg-now">NOW</span></td></tr>
           <tr class="row-pos"><td><i class="fa fa-robot me-1 c-muted"></i>AI Revenue Traction</td><td class="c-warn">Early stage — Agentic AI in suite</td><td class="c-pos fw-bold">Now Assist: $1M+ ACV custs +130% YoY</td><td><span class="bdg bdg-now">NOW Proven</span></td></tr>
@@ -336,23 +758,23 @@
 </div>
 
 <!-- ═══ CORPORATE FINANCE ACTIONS ═══ -->
-<div class="sec-title mt-3"><i class="fa fa-landmark me-2"></i>Corporate Finance Actions — Chronological (Date + Source)</div>
-<div class="card mb-4">
+<div class="sec-title mt-3" id="sec-corporate"><i class="fa fa-landmark me-2"></i>Corporate Finance Actions — Chronological (Date + Source)</div>
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
         <thead><tr><th>Date</th><th>Stock</th><th><i class="fa fa-newspaper me-1"></i>Action / Event</th><th>Value / Detail</th><th>Impact</th><th>Source</th></tr></thead>
         <tbody>
           <tr><td>Apr 2025</td><td><span class="tag-adsk">ADSK</span></td><td>Board departure — Elizabeth "Betsy" Rafael (Audit Chair / former Interim CFO)</td><td>Governance reshuffle</td><td><span class="bdg bdg-warn">NEUTRAL</span></td><td><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000769397" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K</a></td></tr>
-          <tr class="row-pos"><td>Jan 28, 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-circle-dollar-to-slot me-1 c-pos"></i>$5B buyback authorized + $2B Accelerated Share Repurchase (ASR) — imminent return of capital</td><td>$7B total shareholder return</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>STRONG POS</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000005/erq4fy25.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q4 FY25</a></td></tr>
+          <tr class="row-pos"><td>Jan 28, 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-circle-dollar-to-slot me-1 c-pos"></i>$5B buyback authorized + $2B Accelerated Share Repurchase (ASR)</td><td>$7B total shareholder return</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>STRONG POS</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000005/erq4fy25.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q4 FY25</a></td></tr>
           <tr class="row-pos"><td>Mar 2, 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-handshake me-1 c-pos"></i>Closed acquisition of <strong>Veza</strong> — identity security &amp; authorization intelligence</td><td>Strategic bolt-on (price N/D)</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000054/erq1fy26.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q1 FY26</a></td></tr>
-          <tr class="row-pos"><td>Mar 10, 2025</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-handshake me-1 c-pos"></i>Signed definitive agreement to acquire <strong>Moveworks</strong> — agentic AI &amp; enterprise search assistant</td><td>Major AI capability acquisition</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371525000095/prmavericks3-10.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC Form 425</a></td></tr>
+          <tr class="row-pos"><td>Mar 10, 2025</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-handshake me-1 c-pos"></i>Signed agreement to acquire <strong>Moveworks</strong> — agentic AI &amp; enterprise search</td><td>Major AI capability acquisition</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371525000095/prmavericks3-10.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC Form 425</a></td></tr>
           <tr class="row-pos"><td>Apr 20, 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-shield-halved me-1 c-pos"></i>Closed acquisition of <strong>Armis</strong> — real-time asset discovery &amp; cyber exposure management</td><td>Major security platform expansion</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000054/erq1fy26.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q1 FY26</a></td></tr>
-          <tr class="row-pos"><td>Apr 30, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-chart-bar me-1 c-pos"></i><strong>Q1 FY2027 Earnings Beat</strong>: Revenue $1.93B (+18% YoY); EPS surpassed guidance; raised FY27 full-year outlook</td><td>FY27 guidance: $8.155–8.215B rev</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0000769397/000076939726000041/q127pressrelease.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q1 FY27</a></td></tr>
-          <tr class="row-neg"><td>May 21, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-arrow-down me-1 c-neg"></i>KeyBanc cuts ADSK price target <strong>$365 → $341</strong>; maintains Overweight — sector headwinds / valuation re-rating</td><td>PT cut –$24</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>NEGATIVE</span></td><td><a href="https://stockanalysis.com/stocks/adsk/forecast/" class="src-link"><i class="fa fa-link me-1"></i>StockAnalysis</a></td></tr>
-          <tr class="row-neg"><td>May 26, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-triangle-exclamation me-1 c-neg"></i><strong>Technical breakdown</strong>: ADSK breaks 20-day &amp; 50-day MA simultaneously; MACD bearish crossover; DMI directional sell signal triggered</td><td>Multiple simultaneous sell signals</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>STRONG NEG</span></td><td><a href="https://www.barchart.com/stocks/quotes/ADSK/technical-analysis" class="src-link"><i class="fa fa-link me-1"></i>Barchart Technical</a></td></tr>
-          <tr class="row-neg"><td>May 28, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-handshake me-1 c-neg"></i>Announced acquisition of <strong>MaintainX</strong> (maintenance &amp; operations SaaS) — largest acquisition in ADSK history. Creates <em>Autodesk Operations Solutions (AOS)</em></td><td>All-cash: ~$3.6B</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>NEG SHORT-TERM</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0000769397/000121390026062125/ea029248301ex99-1.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K May 28</a></td></tr>
-          <tr class="row-pos"><td>Ongoing 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-robot me-1 c-pos"></i>Expanded partnership with <strong>Anthropic</strong> — Claude AI models integrated into ServiceNow AI Platform for enterprise agentic AI</td><td>Strategic AI capability partnership</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://investor.servicenow.com/stock-info/default.aspx" class="src-link"><i class="fa fa-link me-1"></i>ServiceNow IR</a></td></tr>
+          <tr class="row-pos"><td>Apr 30, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-chart-bar me-1 c-pos"></i><strong>Q1 FY2027 Earnings Beat</strong>: Revenue $1.93B (+18% YoY); EPS surpassed guidance; raised FY27 outlook</td><td>FY27 guidance: $8.155–8.215B rev</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0000769397/000076939726000041/q127pressrelease.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K Q1 FY27</a></td></tr>
+          <tr class="row-neg"><td>May 21, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-arrow-down me-1 c-neg"></i>KeyBanc cuts ADSK price target <strong>$365 → $341</strong>; maintains Overweight</td><td>PT cut –$24</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>NEGATIVE</span></td><td><a href="https://stockanalysis.com/stocks/adsk/forecast/" class="src-link"><i class="fa fa-link me-1"></i>StockAnalysis</a></td></tr>
+          <tr class="row-neg"><td>May 26, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-triangle-exclamation me-1 c-neg"></i><strong>Technical breakdown</strong>: Breaks 20d &amp; 50d MA; MACD bearish crossover; DMI sell signal</td><td>Multiple simultaneous sell signals</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>STRONG NEG</span></td><td><a href="https://www.barchart.com/stocks/quotes/ADSK/technical-analysis" class="src-link"><i class="fa fa-link me-1"></i>Barchart Technical</a></td></tr>
+          <tr class="row-neg"><td>May 28, 2026</td><td><span class="tag-adsk">ADSK</span></td><td><i class="fa fa-handshake me-1 c-neg"></i>Announced acquisition of <strong>MaintainX</strong> — largest ADSK acquisition ever. Creates <em>Autodesk Operations Solutions (AOS)</em></td><td>All-cash: ~$3.6B</td><td><span class="bdg bdg-neg"><i class="fa fa-arrow-down me-1"></i>NEG SHORT-TERM</span></td><td><a href="https://www.sec.gov/Archives/edgar/data/0000769397/000121390026062125/ea029248301ex99-1.htm" class="src-link"><i class="fa fa-file me-1"></i>SEC 8-K May 28</a></td></tr>
+          <tr class="row-pos"><td>Ongoing 2026</td><td><span class="tag-now">NOW</span></td><td><i class="fa fa-robot me-1 c-pos"></i>Expanded partnership with <strong>Anthropic</strong> — Claude AI integrated into ServiceNow AI Platform</td><td>Strategic AI capability partnership</td><td><span class="bdg bdg-pos"><i class="fa fa-arrow-up me-1"></i>POSITIVE</span></td><td><a href="https://investor.servicenow.com/stock-info/default.aspx" class="src-link"><i class="fa fa-link me-1"></i>ServiceNow IR</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -360,23 +782,23 @@
 </div>
 
 <!-- ═══ NEWS IMPACT TABLE ═══ -->
-<div class="sec-title"><i class="fa fa-newspaper me-2"></i>Latest News — Price Impact &amp; Chart Event Markers</div>
-<div class="card mb-4">
+<div class="sec-title" id="sec-news"><i class="fa fa-newspaper me-2"></i>Latest News — Price Impact &amp; Chart Event Markers</div>
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
         <thead><tr><th>Date</th><th>Stock</th><th><i class="fa fa-newspaper me-1"></i>Headline</th><th>Chart Marker</th><th>Price Reaction</th><th>Impact</th></tr></thead>
         <tbody>
-          <tr class="row-pos"><td>Jan 28, 2026</td><td><span class="tag-now">NOW</span></td><td>$5B buyback + $2B ASR signals aggressive capital return — read as management confidence in valuation</td><td><i class="fa fa-caret-up c-pos"></i> Green line (pre-chart)</td><td class="c-pos">+5–8% over 5 days</td><td><span class="bdg bdg-pos"><i class="fa fa-fire me-1"></i>+++ STRONG</span></td></tr>
-          <tr class="row-pos"><td>Mar 2–Apr 20, 2026</td><td><span class="tag-now">NOW</span></td><td>Veza (Mar 2) + Armis (Apr 20) acquisitions closed sequentially — confirms NOW building end-to-end AI security platform</td><td><i class="fa fa-caret-up c-pos"></i> Green markers</td><td class="c-pos">+3–5% cumulatively</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
-          <tr class="row-pos"><td>Apr 30, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>Q1 FY2027 earnings beat: $1.93B (+18%), EPS above guide, raised FY27 revenue guidance to $8.155–8.215B. Strong AI commentary</td><td><i class="fa fa-caret-up c-pos"></i> Green line N6 (chart)</td><td class="c-warn">Positive beat but offset by deal news</td><td><span class="bdg bdg-warn">+ MIXED</span></td></tr>
-          <tr class="row-pos"><td>May 6, 2026</td><td><span class="tag-now">NOW</span></td><td>Bernstein raises NOW PT to $236 (from $226) following Analyst Day — highlights Now Assist AI monetization acceleration</td><td><i class="fa fa-caret-up c-pos"></i> Green N1 (chart)</td><td class="c-pos">+1–3% momentum</td><td><span class="bdg bdg-pos">+ POSITIVE</span></td></tr>
-          <tr class="row-pos"><td>May 19, 2026</td><td><span class="tag-now">NOW</span></td><td>Oppenheimer raises NOW target (equiv. $220); Morgan Stanley raises (equiv. $263) — AI monetization thesis validated post-earnings</td><td><i class="fa fa-caret-up c-pos"></i> Green zone N0 (chart)</td><td class="c-pos">+2–4% push</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
-          <tr class="row-neg"><td>May 21, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>KeyBanc cuts ADSK PT from $365 → $341 (Overweight maintained). Signals analyst concern about near-term sector dynamics</td><td><i class="fa fa-caret-down c-neg"></i> Red line N2 (chart)</td><td class="c-neg">-1.5% to -2% on day</td><td><span class="bdg bdg-neg">– NEGATIVE</span></td></tr>
-          <tr class="row-neg"><td>May 26, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>ADSK breaks through 20-day + 50-day MA; MACD bearish cross; DMI bearish — three simultaneous sell triggers</td><td><i class="fa fa-caret-down c-neg"></i> Red line N5 (chart)</td><td class="c-neg">-4.1% — worst week</td><td><span class="bdg bdg-neg">–– STRONG NEG</span></td></tr>
-          <tr class="row-neg"><td>May 28, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>MaintainX all-cash acquisition ($3.6B) announced. Market punishes stock — integration risk, cash drain, largest ever ADSK deal raises skepticism</td><td><i class="fa fa-caret-down c-neg"></i> Red line N6 (chart)</td><td class="c-neg">-3.5% to -4.5% on day</td><td><span class="bdg bdg-neg">––– STRONG NEG</span></td></tr>
-          <tr class="row-pos"><td>Jun 2026</td><td><span class="tag-now">NOW</span></td><td>Now Assist $1M+ ACV customer count grew 130%+ YoY — strongest proof point for AI monetization in enterprise software; Logik.ai CPQ acquisition planned</td><td><i class="fa fa-caret-up c-pos"></i> Green zone Jun (chart)</td><td class="c-pos">Sustained bid / positive floor</td><td><span class="bdg bdg-pos">+++ STRONG</span></td></tr>
-          <tr class="row-pos"><td>Ongoing 2026</td><td><span class="tag-now">NOW</span></td><td>Anthropic + ServiceNow expanded AI partnership — Claude integrated into NOW AI platform for enterprise agentic workflows</td><td><i class="fa fa-caret-up c-pos"></i> Background positive</td><td class="c-pos">Long-term positive re-rating catalyst</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
+          <tr class="row-pos"><td>Jan 28, 2026</td><td><span class="tag-now">NOW</span></td><td>$5B buyback + $2B ASR signals aggressive capital return</td><td><i class="fa fa-caret-up c-pos"></i> Green (pre-chart)</td><td class="c-pos">+5–8% over 5 days</td><td><span class="bdg bdg-pos"><i class="fa fa-fire me-1"></i>+++ STRONG</span></td></tr>
+          <tr class="row-pos"><td>Mar 2–Apr 20, 2026</td><td><span class="tag-now">NOW</span></td><td>Veza + Armis acquisitions closed — confirms NOW building AI security platform</td><td><i class="fa fa-caret-up c-pos"></i> Green markers</td><td class="c-pos">+3–5% cumulatively</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
+          <tr class="row-pos"><td>Apr 30, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>Q1 FY2027 earnings beat: $1.93B (+18%), EPS above guide, raised FY27 guidance</td><td><i class="fa fa-caret-up c-pos"></i> Green N6 (chart)</td><td class="c-warn">Positive but offset by deal news</td><td><span class="bdg bdg-warn">+ MIXED</span></td></tr>
+          <tr class="row-pos"><td>May 6, 2026</td><td><span class="tag-now">NOW</span></td><td>Bernstein raises NOW PT to $236 — Now Assist AI monetization accelerating</td><td><i class="fa fa-caret-up c-pos"></i> Green N1</td><td class="c-pos">+1–3% momentum</td><td><span class="bdg bdg-pos">+ POSITIVE</span></td></tr>
+          <tr class="row-pos"><td>May 19, 2026</td><td><span class="tag-now">NOW</span></td><td>Oppenheimer raises ($220); Morgan Stanley raises ($263) — AI thesis validated</td><td><i class="fa fa-caret-up c-pos"></i> Green N0</td><td class="c-pos">+2–4% push</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
+          <tr class="row-neg"><td>May 21, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>KeyBanc cuts ADSK PT $365 → $341 — sector headwinds concern</td><td><i class="fa fa-caret-down c-neg"></i> Red N2</td><td class="c-neg">-1.5% to -2% on day</td><td><span class="bdg bdg-neg">– NEGATIVE</span></td></tr>
+          <tr class="row-neg"><td>May 26, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>ADSK breaks 20d + 50d MA; MACD bearish; DMI — three simultaneous sell triggers</td><td><i class="fa fa-caret-down c-neg"></i> Red N5</td><td class="c-neg">-4.1% — worst week</td><td><span class="bdg bdg-neg">–– STRONG NEG</span></td></tr>
+          <tr class="row-neg"><td>May 28, 2026</td><td><span class="tag-adsk">ADSK</span></td><td>MaintainX all-cash acquisition ($3.6B) — integration risk + cash drain punished</td><td><i class="fa fa-caret-down c-neg"></i> Red N6</td><td class="c-neg">-3.5% to -4.5% on day</td><td><span class="bdg bdg-neg">––– STRONG NEG</span></td></tr>
+          <tr class="row-pos"><td>Jun 2026</td><td><span class="tag-now">NOW</span></td><td>Now Assist $1M+ ACV customers +130% YoY; Logik.ai CPQ acquisition planned</td><td><i class="fa fa-caret-up c-pos"></i> Green Jun</td><td class="c-pos">Sustained bid / positive floor</td><td><span class="bdg bdg-pos">+++ STRONG</span></td></tr>
+          <tr class="row-pos"><td>Ongoing 2026</td><td><span class="tag-now">NOW</span></td><td>Anthropic + ServiceNow expanded AI partnership — Claude for enterprise agentic workflows</td><td><i class="fa fa-caret-up c-pos"></i> Background</td><td class="c-pos">Long-term positive re-rating catalyst</td><td><span class="bdg bdg-pos">++ POSITIVE</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -384,9 +806,9 @@
 </div>
 
 <!-- ═══ ANALYST RATINGS ═══ -->
-<div class="sec-title"><i class="fa fa-user-tie me-2"></i>Analyst Ratings, Price Targets &amp; Sentiment</div>
+<div class="sec-title" id="sec-analysts"><i class="fa fa-user-tie me-2"></i>Analyst Ratings, Price Targets &amp; Sentiment</div>
 <div class="row g-3 mb-4">
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-right" data-aos-duration="500">
     <div class="card card-adsk h-100">
       <div class="card-body">
         <div class="fw-bold c-adsk mb-3"><i class="fa fa-cube me-1"></i>ADSK — Consensus Overview</div>
@@ -398,14 +820,14 @@
         <div class="mrow"><span class="ml">Implied Upside</span><span class="mv c-pos fw-bold">+60.9%</span></div>
         <div class="mt-3">
           <div class="chart-label mb-1">Buy ratio (90.9%)</div>
-          <div class="progress mb-2" style="height:8px"><div class="progress-bar bg-success" style="width:90.9%"></div></div>
+          <div class="progress mb-2" style="height:8px"><div class="progress-bar bg-success" style="width:0%" data-target-width="90.9%" id="adsk-buy-bar"></div></div>
           <div class="chart-label mb-1">Hold ratio (9.1%)</div>
-          <div class="progress" style="height:8px"><div class="progress-bar bg-warning" style="width:9.1%"></div></div>
+          <div class="progress" style="height:8px"><div class="progress-bar bg-warning" style="width:0%" data-target-width="9.1%" id="adsk-hold-bar"></div></div>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-left" data-aos-duration="500">
     <div class="card card-now h-100">
       <div class="card-body">
         <div class="fw-bold c-now mb-3"><i class="fa fa-gears me-1"></i>NOW — Consensus Overview</div>
@@ -417,9 +839,9 @@
         <div class="mrow"><span class="ml">Implied Upside</span><span class="mv c-pos fw-bold">+46.5%</span></div>
         <div class="mt-3">
           <div class="chart-label mb-1">Buy ratio (89.6%)</div>
-          <div class="progress mb-2" style="height:8px"><div class="progress-bar" style="width:89.6%;background:var(--now)"></div></div>
+          <div class="progress mb-2" style="height:8px"><div class="progress-bar" style="width:0%;background:var(--now)" data-target-width="89.6%" id="now-buy-bar"></div></div>
           <div class="chart-label mb-1">Hold / Sell ratio (10.4%)</div>
-          <div class="progress" style="height:8px"><div class="progress-bar bg-warning" style="width:10.4%"></div></div>
+          <div class="progress" style="height:8px"><div class="progress-bar bg-warning" style="width:0%" data-target-width="10.4%" id="now-hold-bar"></div></div>
         </div>
       </div>
     </div>
@@ -427,7 +849,7 @@
 </div>
 
 <!-- Analyst Actions Table -->
-<div class="card mb-4">
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -447,8 +869,8 @@
 </div>
 
 <!-- ═══ VALUATION ═══ -->
-<div class="sec-title"><i class="fa fa-scale-balanced me-2"></i>Valuation Metrics — Side-by-Side Comparison</div>
-<div class="card mb-4">
+<div class="sec-title" id="sec-valuation"><i class="fa fa-scale-balanced me-2"></i>Valuation Metrics — Side-by-Side Comparison</div>
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -473,35 +895,35 @@
 </div>
 
 <!-- ═══ VERDICT ═══ -->
-<div class="sec-title"><i class="fa fa-gavel me-2"></i>Verdict, Ratings &amp; Recommendations</div>
+<div class="sec-title" id="sec-verdict"><i class="fa fa-gavel me-2"></i>Verdict, Ratings &amp; Recommendations</div>
 
 <div class="row g-3 mb-4">
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-right" data-aos-duration="600">
     <div class="verdict-adsk">
       <div class="verdict-title c-adsk"><i class="fa fa-cube me-2"></i>ADSK — Autodesk, Inc.</div>
       <div class="star-adsk my-2" style="font-size:1.2rem">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
       <div class="mb-2"><span class="bdg bdg-adsk me-2">4 / 5 Stars</span><span class="bdg bdg-warn">SPECULATIVE BUY — Accumulate on Weakness</span></div>
       <hr style="border-color:var(--border)">
-      <p class="mb-2"><span class="c-pos fw-bold"><i class="fa fa-circle-check me-1"></i>Bull Case:</span> 90.9% gross margin, 18% revenue growth, 39% non-GAAP op. margin target. 60.9% upside to avg analyst PT ($319). Q1 FY2027 earnings beat expectations. RSI ~43 approaching oversold — potential bounce zone. MaintainX strategically expands TAM to industrial operations.</p>
-      <p class="mb-2"><span class="c-neg fw-bold"><i class="fa fa-circle-xmark me-1"></i>Bear Case:</span> Trading below ALL key moving averages (8/20/50/200-day). MACD bearish. $3.6B all-cash MaintainX deal raises integration risk &amp; leverage concerns. Stock down 28% from highs. Near-term momentum is clearly negative.</p>
-      <p class="mb-0"><span class="c-warn fw-bold"><i class="fa fa-crosshairs me-1"></i>Action Plan:</span> Scale-in at <strong class="c-pos">$188–$196</strong> support zone. Stop-loss at <strong class="c-neg">$178</strong>. Targets: <strong class="c-warn">$215 ST</strong> → <strong class="c-blue">$280 (6M)</strong> → <strong class="c-pos">$319 (12M)</strong>. Do NOT chase at $198 — wait for technical stabilization above $205 with volume confirmation.</p>
+      <p class="mb-2"><span class="c-pos fw-bold"><i class="fa fa-circle-check me-1"></i>Bull Case:</span> 90.9% gross margin, 18% revenue growth, 39% non-GAAP op. margin target. 60.9% upside to avg analyst PT ($319). Q1 FY2027 earnings beat. RSI ~43 approaching oversold — potential bounce. MaintainX expands TAM to industrial operations.</p>
+      <p class="mb-2"><span class="c-neg fw-bold"><i class="fa fa-circle-xmark me-1"></i>Bear Case:</span> Trading below ALL key MAs (8/20/50/200-day). MACD bearish. $3.6B all-cash MaintainX deal raises integration &amp; leverage risk. Stock down 28% from highs. Near-term momentum clearly negative.</p>
+      <p class="mb-0"><span class="c-warn fw-bold"><i class="fa fa-crosshairs me-1"></i>Action Plan:</span> Scale-in at <strong class="c-pos">$188–$196</strong> support. Stop-loss <strong class="c-neg">$178</strong>. Targets: <strong class="c-warn">$215 ST</strong> → <strong class="c-blue">$280 (6M)</strong> → <strong class="c-pos">$319 (12M)</strong>. Do NOT chase at $198 — wait for stabilization above $205.</p>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6" data-aos="fade-left" data-aos-duration="600">
     <div class="verdict-now">
       <div class="verdict-title c-now"><i class="fa fa-gears me-2"></i>NOW — ServiceNow, Inc.</div>
       <div class="star-now my-2" style="font-size:1.2rem">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
       <div class="mb-2"><span class="bdg bdg-now me-2">4.2 / 5 Stars</span><span class="bdg bdg-pos">BUY / HOLD — Momentum Play</span></div>
       <hr style="border-color:var(--border)">
-      <p class="mb-2"><span class="c-pos fw-bold"><i class="fa fa-circle-check me-1"></i>Bull Case:</span> 22% revenue growth, strongest AI monetization in enterprise software (Now Assist, $1M+ ACV customers +130% YoY). Platform moat being built via Moveworks + Veza + Armis. $5B buyback + $2B ASR = management conviction. Price above VWAP &amp; all short-term MAs. cRPO $12.64B (+22.5%) provides high revenue visibility.</p>
-      <p class="mb-2"><span class="c-neg fw-bold"><i class="fa fa-circle-xmark me-1"></i>Bear Case:</span> -52% from 52-week high. Still far below 200-day SMA ($142.75). RSI ~73 = overbought short-term risk. High P/E (62×). Multiple concurrent integrations (Armis, Veza, Moveworks) create execution risk. Salesforce competition intensifying.</p>
-      <p class="mb-0"><span class="c-warn fw-bold"><i class="fa fa-crosshairs me-1"></i>Action Plan:</span> Hold or add on dips to <strong class="c-pos">$95–$98</strong> support. Stop-loss at <strong class="c-neg">$90</strong>. Targets: <strong class="c-warn">$115 ST</strong> (breakout) → <strong class="c-blue">$143 (6M, reclaim 200d)</strong> → <strong class="c-pos">$180 (12M)</strong>. RSI overbought — do not chase above $108.</p>
+      <p class="mb-2"><span class="c-pos fw-bold"><i class="fa fa-circle-check me-1"></i>Bull Case:</span> 22% revenue growth, strongest AI monetization in enterprise software (Now Assist +130% YoY). Platform moat via Moveworks + Veza + Armis. $5B buyback + $2B ASR. Price above VWAP &amp; all short-term MAs. cRPO $12.64B (+22.5%) = high revenue visibility.</p>
+      <p class="mb-2"><span class="c-neg fw-bold"><i class="fa fa-circle-xmark me-1"></i>Bear Case:</span> -52% from 52-week high. Far below 200d SMA ($142.75). RSI ~73 = overbought. High P/E (62×). Concurrent integrations = execution risk. Salesforce competition intensifying.</p>
+      <p class="mb-0"><span class="c-warn fw-bold"><i class="fa fa-crosshairs me-1"></i>Action Plan:</span> Add on dips to <strong class="c-pos">$95–$98</strong>. Stop-loss <strong class="c-neg">$90</strong>. Targets: <strong class="c-warn">$115 ST</strong> → <strong class="c-blue">$143 (6M)</strong> → <strong class="c-pos">$180 (12M)</strong>. RSI overbought — do not chase above $108.</p>
     </div>
   </div>
 </div>
 
 <!-- SCORECARD -->
-<div class="card mb-4">
+<div class="card mb-4" data-aos="fade-up" data-aos-duration="500">
   <div class="card-body">
     <div class="fw-bold c-blue mb-3" style="font-size:1rem"><i class="fa fa-trophy me-2"></i>Head-to-Head Final Scorecard</div>
     <div class="table-responsive">
@@ -524,7 +946,7 @@
 </div>
 
 <!-- DISCLAIMER -->
-<div class="disclaimer">
+<div class="disclaimer" data-aos="fade-up" data-aos-duration="400">
   <strong class="c-warn"><i class="fa fa-triangle-exclamation me-1"></i>Disclaimer:</strong>
   This dashboard is for informational and educational purposes only. It does not constitute financial advice or a solicitation to buy or sell securities. All data is sourced from publicly available SEC filings, StockAnalysis.com, Yahoo Finance, Barchart, TipRanks, and analyst reports as of June 15, 2026. Price data includes synthetically generated intra-period points for visualization. Past performance does not guarantee future results. Always conduct independent due diligence and consult a licensed financial advisor before making investment decisions.
   <br><br>
@@ -546,45 +968,357 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+/* ── AOS init ── */
+AOS.init({ once: true, offset: 60 });
+
+/* ── Scroll progress bar ── */
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('scroll-progress');
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  el.style.width = Math.min(pct, 100) + '%';
+});
+
+/* ── Back-to-top ── */
+const btt = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('visible', window.scrollY > 400);
+});
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ── Jump nav active state ── */
+const sections = document.querySelectorAll('[id^="sec-"]');
+const navLinks = document.querySelectorAll('#jump-nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`#jump-nav a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+
+/* ── CountUp.js animated numbers ── */
+window.addEventListener('load', () => {
+  const opts = { duration: 1.8, useGrouping: true };
+  new countUp.CountUp('adsk-price', 198.43, { ...opts, decimalPlaces: 2, prefix: '' }).start();
+  new countUp.CountUp('now-price',  102.13, { ...opts, decimalPlaces: 2 }).start();
+  new countUp.CountUp('adsk-cap',    52.4,  { ...opts, decimalPlaces: 1 }).start();
+  new countUp.CountUp('now-cap',    105.2,  { ...opts, decimalPlaces: 1 }).start();
+  new countUp.CountUp('adsk-target', 319.27,{ ...opts, decimalPlaces: 2 }).start();
+  new countUp.CountUp('now-target',  149.62,{ ...opts, decimalPlaces: 2 }).start();
+
+  /* Animated progress bars */
+  setTimeout(() => {
+    ['adsk-buy-bar','adsk-hold-bar','now-buy-bar','now-hold-bar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.transition = 'width 1.2s ease'; el.style.width = el.dataset.targetWidth + '%'; }
+    });
+  }, 600);
+});
+
+/* ── Tippy.js tooltips ── */
+tippy('.tip-ema', {
+  content: '<strong>EMA (Exponential Moving Average)</strong><br>Weights recent prices more heavily than older ones. Price below EMA = bearish signal.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 260
+});
+tippy('.tip-sma', {
+  content: '<strong>SMA (Simple Moving Average)</strong><br>Equal-weighted average over N days. 50d & 200d SMA are key institutional levels.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 260
+});
+tippy('.tip-vwap', {
+  content: '<strong>VWAP (Volume-Weighted Avg Price)</strong><br>Average price weighted by volume. Institutions use it as a benchmark — price below VWAP signals bearish bias.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 260
+});
+tippy('.tip-rsi', {
+  content: '<strong>RSI (Relative Strength Index)</strong><br>Oscillator 0–100. &lt;30 = oversold (buy signal), &gt;70 = overbought (sell caution). 14-day period standard.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 260
+});
+tippy('.tip-macd', {
+  content: '<strong>MACD (Moving Avg Convergence Divergence)</strong><br>12d EMA minus 26d EMA. Bearish crossover = signal line crosses below MACD line — momentum turning negative.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 280
+});
+tippy('.tip-rpo', {
+  content: '<strong>cRPO (Current Remaining Performance Obligations)</strong><br>Revenue under contract expected to be recognized within 12 months. High cRPO = strong near-term revenue visibility.',
+  allowHTML: true, theme: 'stock', placement: 'top', maxWidth: 280
+});
+
+/* ══════════════════════════════════════════════════════
+   CHART.JS SETUP
+   ══════════════════════════════════════════════════════ */
 Chart.register(window['chartjs-plugin-annotation']);
 
-const labels = ['May 19','May 20','May 21','May 22','May 23','May 27','May 28','May 29','May 30','Jun 2','Jun 3','Jun 4','Jun 5','Jun 6','Jun 9','Jun 10','Jun 11','Jun 12','Jun 13'];
+let gridColor  = '#30363d';
+let mutedColor = '#8b949e';
 
-const adskPrice = [238.5,241.2,239.1,235.8,233.4,228.3,219.7,222.1,218.5,215.2,212.8,209.4,206.7,204.1,201.9,200.2,201.5,198.4,197.8];
-const adskVWAP  = [239.1,239.8,239.6,238.9,237.8,236.2,233.5,232.1,230.6,229.0,227.5,225.9,224.3,222.8,221.3,219.8,218.6,216.9,215.4];
-const adskVol   = [2.1,1.8,2.5,2.3,1.9,3.8,4.2,3.1,2.7,2.4,2.2,2.0,1.8,1.9,2.1,2.3,2.0,2.8,1.9];
+/* ════════════════════════════════════════════
+   DATA SETS
+   ════════════════════════════════════════════ */
 
-const nowPrice  = [88.2,89.5,91.3,93.7,95.2,94.8,97.3,99.1,100.5,98.7,99.8,101.2,102.5,103.1,101.8,102.4,103.7,104.3,102.1];
-const nowVWAP   = [88.6,89.1,90.2,91.5,92.8,93.1,94.2,95.4,96.5,96.7,97.0,97.5,98.1,98.8,99.0,99.4,99.9,100.5,100.7];
-const nowVol    = [4.2,3.8,4.5,5.1,4.8,3.9,5.2,4.7,5.8,3.9,4.1,4.8,5.2,4.9,3.8,4.3,5.1,5.6,3.5];
-
-const gridColor  = '#30363d';
-const mutedColor = '#8b949e';
-
-const baseScales = {
-  x: { ticks:{color:mutedColor,font:{size:10}}, grid:{color:gridColor} },
-  y: { ticks:{color:mutedColor,font:{size:10}}, grid:{color:gridColor}, position:'left' },
-  yVol: { type:'linear', position:'right', ticks:{color:'#444',font:{size:9}}, grid:{drawOnChartArea:false} }
+/* ── 1. DAILY (May 19 – Jun 13, 2026) ── */
+const dailyData = {
+  labels: ['May 19','May 20','May 21','May 22','May 23','May 27','May 28','May 29','May 30','Jun 2','Jun 3','Jun 4','Jun 5','Jun 6','Jun 9','Jun 10','Jun 11','Jun 12','Jun 13'],
+  adskPrice: [238.5,241.2,239.1,235.8,233.4,228.3,219.7,222.1,218.5,215.2,212.8,209.4,206.7,204.1,201.9,200.2,201.5,198.4,197.8],
+  adskVWAP:  [239.1,239.8,239.6,238.9,237.8,236.2,233.5,232.1,230.6,229.0,227.5,225.9,224.3,222.8,221.3,219.8,218.6,216.9,215.4],
+  adskVol:   [2.1,1.8,2.5,2.3,1.9,3.8,4.2,3.1,2.7,2.4,2.2,2.0,1.8,1.9,2.1,2.3,2.0,2.8,1.9],
+  nowPrice:  [88.2,89.5,91.3,93.7,95.2,94.8,97.3,99.1,100.5,98.7,99.8,101.2,102.5,103.1,101.8,102.4,103.7,104.3,102.1],
+  nowVWAP:   [88.6,89.1,90.2,91.5,92.8,93.1,94.2,95.4,96.5,96.7,97.0,97.5,98.1,98.8,99.0,99.4,99.9,100.5,100.7],
+  nowVol:    [4.2,3.8,4.5,5.1,4.8,3.9,5.2,4.7,5.8,3.9,4.1,4.8,5.2,4.9,3.8,4.3,5.1,5.6,3.5],
+  // OHLC — {o,h,l,c} per bar (Open/High/Low/Close)
+  adskOHLC: [
+    {o:236.2,h:241.8,l:235.1,c:238.5},{o:239.0,h:243.5,l:238.2,c:241.2},
+    {o:241.5,h:242.1,l:237.8,c:239.1},{o:239.3,h:240.0,l:233.9,c:235.8},
+    {o:236.0,h:236.5,l:231.8,c:233.4},{o:228.5,h:230.2,l:225.4,c:228.3},
+    {o:228.8,h:229.5,l:217.2,c:219.7},{o:219.2,h:224.8,l:218.0,c:222.1},
+    {o:222.5,h:223.1,l:216.9,c:218.5},{o:218.6,h:219.2,l:213.1,c:215.2},
+    {o:215.4,h:215.8,l:210.9,c:212.8},{o:213.0,h:214.2,l:207.8,c:209.4},
+    {o:209.6,h:210.5,l:204.8,c:206.7},{o:207.0,h:208.2,l:202.1,c:204.1},
+    {o:204.3,h:204.8,l:199.5,c:201.9},{o:202.0,h:203.5,l:198.6,c:200.2},
+    {o:200.4,h:203.2,l:199.1,c:201.5},{o:201.6,h:202.2,l:196.8,c:198.4},
+    {o:198.5,h:199.8,l:196.2,c:197.8}
+  ],
+  nowOHLC: [
+    {o:87.8,h:89.5,l:87.2,c:88.2},{o:88.3,h:91.2,l:87.9,c:89.5},
+    {o:89.6,h:92.8,l:89.1,c:91.3},{o:91.4,h:95.2,l:91.0,c:93.7},
+    {o:93.8,h:96.5,l:93.2,c:95.2},{o:95.3,h:95.8,l:93.5,c:94.8},
+    {o:94.9,h:98.7,l:94.2,c:97.3},{o:97.4,h:100.5,l:96.8,c:99.1},
+    {o:99.2,h:102.1,l:98.5,c:100.5},{o:100.6,h:100.8,l:97.2,c:98.7},
+    {o:98.8,h:101.4,l:98.1,c:99.8},{o:100.0,h:103.2,l:99.5,c:101.2},
+    {o:101.3,h:104.2,l:100.8,c:102.5},{o:102.6,h:104.8,l:101.8,c:103.1},
+    {o:103.2,h:103.5,l:100.1,c:101.8},{o:101.9,h:104.2,l:101.2,c:102.4},
+    {o:102.5,h:105.4,l:102.0,c:103.7},{o:103.8,h:106.0,l:103.1,c:104.3},
+    {o:104.4,h:104.8,l:100.2,c:102.1}
+  ],
+  label: 'Daily closes · May 19 – Jun 13, 2026'
 };
 
-/* ADSK annotations */
-const adskAnnotations = {
-  evKB: { type:'line', xMin:2, xMax:2, borderColor:'rgba(248,81,73,0.7)', borderWidth:2, borderDash:[5,3],
-    label:{content:'KeyBanc PT ↓ $341', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.7)', font:{size:9}} },
-  evMA: { type:'line', xMin:5, xMax:5, borderColor:'rgba(248,81,73,0.9)', borderWidth:2, borderDash:[5,3],
-    label:{content:'Breaks 20d + 50d MA', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.7)', font:{size:9}} },
-  evDeal: { type:'line', xMin:6, xMax:6, borderColor:'rgba(248,81,73,1)', borderWidth:3, borderDash:[4,2],
-    label:{content:'MaintainX $3.6B + Q1 Earnings', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.8)', font:{size:9}} }
+/* ── 2. WEEKLY (Mar 3 – Jun 13, 2026, ~15 weeks) ── */
+const weeklyData = {
+  labels: ['Mar 3','Mar 10','Mar 17','Mar 24','Mar 31','Apr 7','Apr 14','Apr 21','Apr 28','May 5','May 12','May 19','May 26','Jun 2','Jun 9','Jun 13'],
+  adskPrice: [267.2,263.8,260.4,257.1,254.8,251.3,249.7,253.2,255.8,248.3,242.7,238.5,219.7,212.8,201.9,197.8],
+  adskVWAP:  [268.1,266.5,264.8,262.9,261.0,258.7,256.4,255.8,255.2,252.6,249.8,246.3,240.1,233.5,226.4,220.9],
+  adskVol:   [18.4,16.2,15.8,14.9,13.7,14.1,13.5,14.8,17.2,16.4,15.9,18.1,28.7,19.4,16.3,14.1],
+  nowPrice:  [83.1,81.5,84.2,86.8,85.9,87.4,89.1,90.8,91.5,93.2,91.8,88.2,97.3,99.8,101.8,102.1],
+  nowVWAP:   [83.4,82.6,83.1,84.0,84.5,85.2,86.1,87.0,87.8,88.9,89.4,89.7,91.5,93.2,95.4,97.1],
+  nowVol:    [21.4,19.8,20.5,22.1,18.7,19.3,21.8,23.4,24.1,22.8,21.5,19.4,26.3,24.7,23.1,19.8],
+  adskOHLC: [
+    {o:268.5,h:270.1,l:265.3,c:267.2},{o:265.0,h:266.8,l:261.9,c:263.8},
+    {o:262.0,h:263.5,l:258.8,c:260.4},{o:259.0,h:260.2,l:255.1,c:257.1},
+    {o:256.0,h:257.8,l:252.3,c:254.8},{o:253.0,h:254.1,l:249.0,c:251.3},
+    {o:250.5,h:252.0,l:247.8,c:249.7},{o:250.0,h:255.5,l:249.1,c:253.2},
+    {o:253.5,h:258.2,l:252.0,c:255.8},{o:256.0,h:257.4,l:246.2,c:248.3},
+    {o:249.0,h:250.8,l:240.5,c:242.7},{o:243.0,h:244.5,l:237.2,c:238.5},
+    {o:238.8,h:240.2,l:217.5,c:219.7},{o:220.0,h:221.5,l:210.8,c:212.8},
+    {o:213.0,h:214.5,l:199.8,c:201.9},{o:202.0,h:203.5,l:196.2,c:197.8}
+  ],
+  nowOHLC: [
+    {o:83.5,h:84.8,l:82.1,c:83.1},{o:82.0,h:83.2,l:80.5,c:81.5},
+    {o:81.8,h:85.5,l:81.2,c:84.2},{o:84.5,h:88.2,l:84.1,c:86.8},
+    {o:87.0,h:87.5,l:84.8,c:85.9},{o:86.2,h:88.8,l:85.5,c:87.4},
+    {o:87.5,h:90.5,l:87.1,c:89.1},{o:89.2,h:92.2,l:88.8,c:90.8},
+    {o:91.0,h:93.5,l:90.5,c:91.5},{o:91.8,h:94.8,l:91.2,c:93.2},
+    {o:93.5,h:94.2,l:90.8,c:91.8},{o:92.0,h:93.5,l:87.2,c:88.2},
+    {o:88.5,h:98.8,l:88.1,c:97.3},{o:97.5,h:101.5,l:97.0,c:99.8},
+    {o:99.8,h:103.5,l:99.5,c:101.8},{o:102.0,h:104.8,l:100.2,c:102.1}
+  ],
+  label: 'Weekly closes · Mar 3 – Jun 13, 2026 (15 weeks)'
 };
 
-/* NOW annotations */
-const nowAnnotations = {
-  evBern: { type:'line', xMin:0, xMax:0, borderColor:'rgba(63,185,80,0.7)', borderWidth:2, borderDash:[5,3],
-    label:{content:'Post-Bernstein Upgrade', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.7)', font:{size:9}} },
-  evAI: { type:'line', xMin:6, xMax:6, borderColor:'rgba(63,185,80,0.8)', borderWidth:2, borderDash:[5,3],
-    label:{content:'Armis Close + AI Momentum', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.7)', font:{size:9}} },
-  evAssist: { type:'line', xMin:12, xMax:12, borderColor:'rgba(63,185,80,0.9)', borderWidth:2, borderDash:[5,3],
-    label:{content:'Now Assist 130% Cust Growth', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.7)', font:{size:9}} }
+/* ── 3. HOURLY (Apr 1 – Jun 13, 2026, ~55 trading days) ── */
+function buildHourlyData() {
+  const labels = [], adskPrices = [], adskVols = [], nowPrices = [], nowVols = [];
+
+  // Seeded LCG PRNG for deterministic output
+  let s1 = 31337, s2 = 98413;
+  const r1 = () => { s1 = Math.imul(s1, 1664525) + 1013904223 >>> 0; return (s1 / 0xFFFFFFFF) - 0.5; };
+  const r2 = () => { s2 = Math.imul(s2, 1664525) + 1013904223 >>> 0; return (s2 / 0xFFFFFFFF) - 0.5; };
+
+  const slots = ['9:30','10:30','11:30','12:30','13:30','14:30','15:30'];
+  let adskP = 261.5, nowP = 83.8;
+
+  const start = new Date('2026-04-01');
+  const end   = new Date('2026-06-13');
+
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    if (d.getDay() === 0 || d.getDay() === 6) continue;
+    const ds = d.toISOString().slice(0, 10);
+    const dateStr = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+
+    // Per-day drift based on known events in CLAUDE.md
+    let adskD = -0.065, nowD = 0.055;
+    if (ds >= '2026-04-30' && ds <= '2026-05-01') { adskD = 0.35; nowD = 0.12; } // Q1 earnings beat
+    if (ds >= '2026-05-21' && ds <= '2026-05-22') { adskD = -0.25; }              // KeyBanc PT cut
+    if (ds >= '2026-05-26' && ds <= '2026-05-29') { adskD = -1.10; }              // MA breakdown + MaintainX deal
+    if (ds >= '2026-01-28' && ds <= '2026-01-30') { nowD  =  0.80; }              // $7B buyback (pre-period)
+    if (ds >= '2026-04-20' && ds <= '2026-04-22') { nowD  =  0.30; }              // Armis close
+
+    for (let h = 0; h < slots.length; h++) {
+      adskP = Math.max(188, Math.min(272, adskP + adskD * 0.14 + r1() * 0.75));
+      nowP  = Math.max(80,  Math.min(108, nowP  + nowD  * 0.14 + r2() * 0.52));
+
+      labels.push(`${dateStr} ${slots[h]}`);
+      adskPrices.push(parseFloat(adskP.toFixed(2)));
+      nowPrices.push(parseFloat(nowP.toFixed(2)));
+      adskVols.push(parseFloat((Math.abs(r1()) * 0.45 + 0.12).toFixed(2)));
+      nowVols.push(parseFloat((Math.abs(r2()) * 0.65 + 0.18).toFixed(2)));
+    }
+  }
+
+  // Rolling 28-bar VWAP
+  const rollingVWAP = (prices, vols, w = 28) => prices.map((_, i) => {
+    const from = Math.max(0, i - w + 1);
+    let pv = 0, v = 0;
+    for (let j = from; j <= i; j++) { pv += prices[j] * vols[j]; v += vols[j]; }
+    return parseFloat((pv / v).toFixed(2));
+  });
+
+  return {
+    labels,
+    adskPrice: adskPrices, adskVWAP: rollingVWAP(adskPrices, adskVols), adskVol: adskVols,
+    nowPrice:  nowPrices,  nowVWAP:  rollingVWAP(nowPrices,  nowVols),  nowVol:  nowVols,
+    label: 'Hourly (30-min bars) · Apr 1 – Jun 13, 2026 · Scroll to zoom'
+  };
+}
+const hourlyData = buildHourlyData();
+
+/* ════════════════════════════════════════════
+   INDICATOR MATH
+   ════════════════════════════════════════════ */
+function calcRSI(closes, period) {
+  const out = new Array(closes.length).fill(null);
+  for (let i = period; i < closes.length; i++) {
+    let g = 0, l = 0;
+    for (let j = i - period + 1; j <= i; j++) {
+      const d = closes[j] - closes[j-1];
+      if (d > 0) g += d; else l -= d;
+    }
+    const rs = (g / period) / ((l / period) || 0.0001);
+    out[i] = parseFloat((100 - 100 / (1 + rs)).toFixed(1));
+  }
+  return out;
+}
+
+function calcBB(closes, period = 10, mult = 2) {
+  const upper = [], middle = [], lower = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (i < period - 1) { upper.push(null); middle.push(null); lower.push(null); continue; }
+    const sl = closes.slice(i - period + 1, i + 1);
+    const sma = sl.reduce((a,b) => a+b, 0) / period;
+    const std = Math.sqrt(sl.reduce((a,b) => a + (b-sma)**2, 0) / period);
+    upper.push(parseFloat((sma + mult*std).toFixed(2)));
+    middle.push(parseFloat(sma.toFixed(2)));
+    lower.push(parseFloat((sma - mult*std).toFixed(2)));
+  }
+  return { upper, middle, lower };
+}
+
+function fibLevels(high, low) {
+  const r = high - low;
+  return {
+    r0:   parseFloat(low.toFixed(2)),
+    r236: parseFloat((low + r * 0.236).toFixed(2)),
+    r382: parseFloat((low + r * 0.382).toFixed(2)),
+    r500: parseFloat((low + r * 0.500).toFixed(2)),
+    r618: parseFloat((low + r * 0.618).toFixed(2)),
+    r786: parseFloat((low + r * 0.786).toFixed(2)),
+    r100: parseFloat(high.toFixed(2))
+  };
+}
+
+/* ════════════════════════════════════════════
+   CANDLE PATTERN ANNOTATIONS (DAILY ONLY)
+   ════════════════════════════════════════════ */
+function buildPatternAnnotations(stock) {
+  const anns = {};
+  if (stock === 'adsk') {
+    // i=2 Shooting Star (May 21) — bearish reversal after rally high
+    anns.pat1 = { type:'box', xMin:2-.3, xMax:2+.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(248,81,73,.9)', borderWidth:2, borderDash:[3,2],
+      backgroundColor:'rgba(248,81,73,.08)',
+      label:{content:'🕯 Shooting Star', display:true, position:'end', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=6 Bearish Marubozu (May 28) — MaintainX deal + breakdown
+    anns.pat2 = { type:'box', xMin:5.7, xMax:6.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(255,107,0,.95)', borderWidth:2,
+      backgroundColor:'rgba(255,107,0,.1)',
+      label:{content:'🕯 Bearish Marubozu', display:true, position:'end', color:'#ff6b00', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=8 Bearish Harami (May 30) — inside bar rejection
+    anns.pat3 = { type:'box', xMin:7.7, xMax:8.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(248,81,73,.6)', borderWidth:1, borderDash:[3,2],
+      backgroundColor:'rgba(248,81,73,.05)',
+      label:{content:'🕯 Bearish Harami', display:true, position:'start', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=15 Doji (Jun 10) — potential exhaustion
+    anns.pat4 = { type:'box', xMin:14.7, xMax:15.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(255,166,87,.8)', borderWidth:2,
+      backgroundColor:'rgba(255,166,87,.08)',
+      label:{content:'🕯 Doji — Exhaustion', display:true, position:'start', color:'#ffa657', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=16 Hammer (Jun 11) — potential bullish reversal
+    anns.pat5 = { type:'box', xMin:15.7, xMax:16.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(63,185,80,.9)', borderWidth:2,
+      backgroundColor:'rgba(63,185,80,.1)',
+      label:{content:'🕯 Hammer — Watch Reversal', display:true, position:'start', color:'#3fb950', font:{size:8}, backgroundColor:'rgba(0,0,0,.8)'} };
+    // Oversold zone band
+    anns.osZone = { type:'box', xMin:-0.5, xMax:18.5, yMin:188, yMax:196,
+      borderColor:'rgba(63,185,80,.3)', borderWidth:1, borderDash:[4,3],
+      backgroundColor:'rgba(63,185,80,.04)',
+      label:{content:'Support / Oversold Zone $188–196', display:true, position:'start', color:'#3fb950', font:{size:8}, backgroundColor:'rgba(0,0,0,.6)'} };
+  } else {
+    // NOW patterns
+    // i=3 Bullish Engulfing (May 22) — reversal upward
+    anns.pat1 = { type:'box', xMin:2.7, xMax:3.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(63,185,80,.9)', borderWidth:2,
+      backgroundColor:'rgba(63,185,80,.1)',
+      label:{content:'🕯 Bullish Engulfing', display:true, position:'end', color:'#3fb950', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=5 Shooting Star (May 27) — brief pause
+    anns.pat2 = { type:'box', xMin:4.7, xMax:5.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(248,81,73,.6)', borderWidth:1, borderDash:[3,2],
+      backgroundColor:'rgba(248,81,73,.05)',
+      label:{content:'🕯 Shooting Star', display:true, position:'start', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=9 Doji at top (Jun 2) — overbought exhaustion
+    anns.pat3 = { type:'box', xMin:8.7, xMax:9.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(255,166,87,.8)', borderWidth:2,
+      backgroundColor:'rgba(255,166,87,.08)',
+      label:{content:'🕯 Doji — OB Exhaustion', display:true, position:'end', color:'#ffa657', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // i=14 Shooting Star (Jun 9) — overbought warning
+    anns.pat4 = { type:'box', xMin:13.7, xMax:14.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(248,81,73,.8)', borderWidth:2,
+      backgroundColor:'rgba(248,81,73,.08)',
+      label:{content:'🕯 Shooting Star — RSI ~73 OB', display:true, position:'end', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.8)'} };
+    // i=18 Shooting Star/Doji (Jun 13)
+    anns.pat5 = { type:'box', xMin:17.7, xMax:18.3, yMin:'auto', yMax:'auto',
+      borderColor:'rgba(248,81,73,.7)', borderWidth:1, borderDash:[3,2],
+      backgroundColor:'rgba(248,81,73,.06)',
+      label:{content:'🕯 Evening Doji — OB Risk', display:true, position:'end', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.75)'} };
+    // Overbought zone band
+    anns.obZone = { type:'box', xMin:-0.5, xMax:18.5, yMin:105, yMax:110,
+      borderColor:'rgba(248,81,73,.3)', borderWidth:1, borderDash:[4,3],
+      backgroundColor:'rgba(248,81,73,.04)',
+      label:{content:'Overbought / Resistance $105–108', display:true, position:'start', color:'#f85149', font:{size:8}, backgroundColor:'rgba(0,0,0,.6)'} };
+  }
+  return anns;
+}
+
+/* ════════════════════════════════════════════
+   CHART ANNOTATIONS PER RANGE
+   ════════════════════════════════════════════ */
+const adskAnnotationsDaily = {
+  evKB:   { type:'line', xMin:2, xMax:2, borderColor:'rgba(248,81,73,0.7)', borderWidth:2, borderDash:[5,3], label:{content:'KeyBanc PT ↓ $341', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evMA:   { type:'line', xMin:5, xMax:5, borderColor:'rgba(248,81,73,0.9)', borderWidth:2, borderDash:[5,3], label:{content:'Breaks 20d+50d MA', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evDeal: { type:'line', xMin:6, xMax:6, borderColor:'rgba(248,81,73,1)',   borderWidth:3, borderDash:[4,2], label:{content:'MaintainX $3.6B', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.8)', font:{size:9}} }
+};
+const nowAnnotationsDaily = {
+  evBern:   { type:'line', xMin:0,  xMax:0,  borderColor:'rgba(63,185,80,0.7)', borderWidth:2, borderDash:[5,3], label:{content:'Post-Bernstein', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evAI:     { type:'line', xMin:6,  xMax:6,  borderColor:'rgba(63,185,80,0.8)', borderWidth:2, borderDash:[5,3], label:{content:'Armis + AI Mom.', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evAssist: { type:'line', xMin:12, xMax:12, borderColor:'rgba(63,185,80,0.9)', borderWidth:2, borderDash:[5,3], label:{content:'Now Assist +130%', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} }
+};
+const adskAnnotationsWeekly = {
+  evEarn: { type:'line', xMin:8,  xMax:8,  borderColor:'rgba(63,185,80,0.8)',  borderWidth:2, borderDash:[5,3], label:{content:'Q1 FY27 Beat', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evKB:   { type:'line', xMin:11, xMax:11, borderColor:'rgba(248,81,73,0.7)', borderWidth:2, borderDash:[5,3], label:{content:'KeyBanc PT ↓', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evDeal: { type:'line', xMin:12, xMax:12, borderColor:'rgba(248,81,73,1)',    borderWidth:3, borderDash:[4,2], label:{content:'MaintainX + MA Breakdown', display:true, position:'start', color:'#f85149', backgroundColor:'rgba(0,0,0,.8)', font:{size:9}} }
+};
+const nowAnnotationsWeekly = {
+  evArmis: { type:'line', xMin:8,  xMax:8,  borderColor:'rgba(63,185,80,0.8)', borderWidth:2, borderDash:[5,3], label:{content:'Armis Closed', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} },
+  evAI:    { type:'line', xMin:12, xMax:12, borderColor:'rgba(63,185,80,0.9)', borderWidth:2, borderDash:[5,3], label:{content:'Now Assist 130%', display:true, position:'start', color:'#3fb950', backgroundColor:'rgba(0,0,0,.75)', font:{size:9}} }
 };
 
 const tooltipDefaults = {
@@ -592,72 +1326,314 @@ const tooltipDefaults = {
   titleColor:'#e6edf3', bodyColor:'#8b949e', mode:'index', intersect:false
 };
 
-/* ── ADSK CHART ── */
-new Chart(document.getElementById('adskChart'), {
+const zoomPlugin = {
+  zoom: { wheel:{ enabled:true }, pinch:{ enabled:true }, mode:'x' },
+  pan:  { enabled:true, mode:'x' }
+};
+
+/* ════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════ */
+let currentRange     = 'daily';
+let currentChartType = 'line';
+const activeIndicators = new Set();
+
+function getData() {
+  return currentRange === 'weekly' ? weeklyData : currentRange === 'hourly' ? hourlyData : dailyData;
+}
+
+/* ════════════════════════════════════════════
+   CHART FACTORY HELPERS
+   ════════════════════════════════════════════ */
+function makeBaseScales(volMax) {
+  return {
+    x:    { ticks:{color:mutedColor,font:{size:10}}, grid:{color:gridColor} },
+    y:    { ticks:{color:mutedColor,font:{size:10}}, grid:{color:gridColor}, position:'left' },
+    yVol: { type:'linear', position:'right', max:volMax, ticks:{color:'#444',font:{size:9}}, grid:{drawOnChartArea:false} }
+  };
+}
+
+function makePriceDataset(color, fillColor, label, closes, ohlcArr, type, radius) {
+  if (type === 'line') {
+    return { type:'line', label, data:closes,
+      borderColor:color, backgroundColor:fillColor, borderWidth:2.5,
+      pointRadius:radius, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 };
+  }
+  const d = getData();
+  const mapped = d.labels.map((x,i) => {
+    const bar = ohlcArr && ohlcArr[i] ? ohlcArr[i] : {o:closes[i],h:closes[i],l:closes[i],c:closes[i]};
+    return { x, o:bar.o, h:bar.h, l:bar.l, c:bar.c };
+  });
+  return { type, label, data:mapped,
+    color:{ up:color, down:'#f85149', unchanged:'#8b949e' },
+    borderColor:{ up:color, down:'#f85149', unchanged:'#8b949e' },
+    yAxisID:'y', order:1 };
+}
+
+function buildAnnotations(stock) {
+  let base = {};
+  if (currentRange === 'daily') {
+    base = stock === 'adsk' ? { ...adskAnnotationsDaily } : { ...nowAnnotationsDaily };
+    if (currentChartType !== 'line') Object.assign(base, buildPatternAnnotations(stock));
+  } else if (currentRange === 'weekly') {
+    base = stock === 'adsk' ? { ...adskAnnotationsWeekly } : { ...nowAnnotationsWeekly };
+  }
+  if (activeIndicators.has('fib')) {
+    const d = getData();
+    const prices = stock === 'adsk' ? d.adskPrice : d.nowPrice;
+    const h = Math.max(...prices), l = Math.min(...prices);
+    const fl = fibLevels(h, l);
+    const fc = stock === 'adsk' ? 'rgba(240,165,0,' : 'rgba(0,212,170,';
+    [['fib0',fl.r0,'0% Low',.4],['fib236',fl.r236,'23.6%',.55],['fib382',fl.r382,'38.2%',.7],
+     ['fib500',fl.r500,'50%',.85],['fib618',fl.r618,'61.8% ★',.9],['fib786',fl.r786,'78.6%',.65],['fib100',fl.r100,'100% High',.4]
+    ].forEach(([k,y,lbl,a]) => {
+      base[k] = { type:'line', yMin:y, yMax:y, borderColor:`${fc}${a})`, borderWidth:1, borderDash:[5,4],
+        label:{content:`${lbl} $${y}`, display:true, position:'end', color:`${fc}${a+.15})`, font:{size:8}, backgroundColor:'rgba(0,0,0,.55)'} };
+    });
+  }
+  return base;
+}
+
+/* ════════════════════════════════════════════
+   CREATE CHARTS
+   ════════════════════════════════════════════ */
+const adskChart = new Chart(document.getElementById('adskChart'), {
   data: {
-    labels,
+    labels: dailyData.labels,
     datasets: [
-      { type:'line', label:'ADSK Price', data:adskPrice, borderColor:'#f0a500', backgroundColor:'rgba(240,165,0,.07)', borderWidth:2.5, pointRadius:3, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 },
-      { type:'line', label:'VWAP',       data:adskVWAP,  borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
-      { type:'bar',  label:'Volume (M)', data:adskVol,   backgroundColor:'rgba(240,165,0,.15)', yAxisID:'yVol', barPercentage:.6, order:3 }
+      makePriceDataset('#f0a500','rgba(240,165,0,.07)','ADSK Price',dailyData.adskPrice,dailyData.adskOHLC,'line',3),
+      { type:'line', label:'VWAP', data:dailyData.adskVWAP, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
+      { type:'bar',  label:'Vol (M)', data:dailyData.adskVol, backgroundColor:'rgba(240,165,0,.15)', yAxisID:'yVol', barPercentage:.6, order:3 },
+      { type:'line', label:'BB Upper', data:[], borderColor:'rgba(240,165,0,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
+      { type:'line', label:'BB Mid',   data:[], borderColor:'rgba(240,165,0,.3)',  borderWidth:1, borderDash:[6,5], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
+      { type:'line', label:'BB Lower', data:[], borderColor:'rgba(240,165,0,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:'+1', backgroundColor:'rgba(240,165,0,.04)', hidden:true, order:2 },
     ]
   },
   options: {
     responsive:true, maintainAspectRatio:true,
-    plugins: { legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:adskAnnotations} },
-    scales: { ...baseScales, yVol:{ ...baseScales.yVol, max:Math.max(...adskVol)*5 } }
+    plugins:{ legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:buildAnnotations('adsk')}, zoom:zoomPlugin },
+    scales: makeBaseScales(Math.max(...dailyData.adskVol)*5)
   }
 });
 
-/* ── NOW CHART ── */
-new Chart(document.getElementById('nowChart'), {
+const nowChart = new Chart(document.getElementById('nowChart'), {
   data: {
-    labels,
+    labels: dailyData.labels,
     datasets: [
-      { type:'line', label:'NOW Price', data:nowPrice, borderColor:'#00d4aa', backgroundColor:'rgba(0,212,170,.07)', borderWidth:2.5, pointRadius:3, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 },
-      { type:'line', label:'VWAP',      data:nowVWAP,  borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
-      { type:'bar',  label:'Volume (M)',data:nowVol,   backgroundColor:'rgba(0,212,170,.15)', yAxisID:'yVol', barPercentage:.6, order:3 }
+      makePriceDataset('#00d4aa','rgba(0,212,170,.07)','NOW Price',dailyData.nowPrice,dailyData.nowOHLC,'line',3),
+      { type:'line', label:'VWAP', data:dailyData.nowVWAP, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
+      { type:'bar',  label:'Vol (M)', data:dailyData.nowVol, backgroundColor:'rgba(0,212,170,.15)', yAxisID:'yVol', barPercentage:.6, order:3 },
+      { type:'line', label:'BB Upper', data:[], borderColor:'rgba(0,212,170,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
+      { type:'line', label:'BB Mid',   data:[], borderColor:'rgba(0,212,170,.3)',  borderWidth:1, borderDash:[6,5], pointRadius:0, yAxisID:'y', fill:false, hidden:true, order:2 },
+      { type:'line', label:'BB Lower', data:[], borderColor:'rgba(0,212,170,.55)', borderWidth:1, borderDash:[4,3], pointRadius:0, yAxisID:'y', fill:'+1', backgroundColor:'rgba(0,212,170,.04)', hidden:true, order:2 },
     ]
   },
   options: {
     responsive:true, maintainAspectRatio:true,
-    plugins: { legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:nowAnnotations} },
-    scales: { ...baseScales, yVol:{ ...baseScales.yVol, max:Math.max(...nowVol)*5 } }
+    plugins:{ legend:{labels:{color:mutedColor,font:{size:11}}}, tooltip:tooltipDefaults, annotation:{annotations:buildAnnotations('now')}, zoom:zoomPlugin },
+    scales: makeBaseScales(Math.max(...dailyData.nowVol)*5)
   }
 });
+
+/* ── RSI sub-charts ── */
+const rsiScales = () => ({
+  x:   { display:false, ticks:{color:mutedColor,font:{size:9}}, grid:{color:gridColor} },
+  y:   { min:0, max:100, ticks:{color:mutedColor,font:{size:9}, callback:v=>`${v}`}, grid:{color:gridColor},
+         afterBuildTicks: a => { a.ticks = [{value:30},{value:50},{value:70}]; } }
+});
+const adskRSIChart = new Chart(document.getElementById('adskRSI'), {
+  type:'line', data:{ labels:dailyData.labels, datasets:[{ label:'RSI(14)', data:calcRSI(dailyData.adskPrice,14), borderColor:'#ffa657', borderWidth:1.5, pointRadius:0, tension:.3 }]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{...tooltipDefaults,mode:'index'},
+      annotation:{annotations:{ob:{type:'line',yMin:70,yMax:70,borderColor:'rgba(248,81,73,.6)',borderWidth:1,borderDash:[4,3]},os:{type:'line',yMin:30,yMax:30,borderColor:'rgba(63,185,80,.6)',borderWidth:1,borderDash:[4,3]}}}
+    }, scales:rsiScales() }
+});
+const nowRSIChart = new Chart(document.getElementById('nowRSI'), {
+  type:'line', data:{ labels:dailyData.labels, datasets:[{ label:'RSI(14)', data:calcRSI(dailyData.nowPrice,14), borderColor:'#00d4aa', borderWidth:1.5, pointRadius:0, tension:.3 }]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{...tooltipDefaults,mode:'index'},
+      annotation:{annotations:{ob:{type:'line',yMin:70,yMax:70,borderColor:'rgba(248,81,73,.6)',borderWidth:1,borderDash:[4,3]},os:{type:'line',yMin:30,yMax:30,borderColor:'rgba(63,185,80,.6)',borderWidth:1,borderDash:[4,3]}}}
+    }, scales:rsiScales() }
+});
+
+/* ════════════════════════════════════════════
+   MASTER UPDATE — RANGE / TYPE / INDICATORS
+   ════════════════════════════════════════════ */
+function applyChartUpdate() {
+  const d   = getData();
+  const isH = currentRange === 'hourly';
+  const isD = currentRange === 'daily';
+  const pt  = isH ? 0 : 3;
+  const bbP = isH ? 20 : 10;
+  const bbOn = activeIndicators.has('bb');
+
+  const adskBB = calcBB(d.adskPrice, bbP);
+  const nowBB  = calcBB(d.nowPrice,  bbP);
+
+  [[adskChart,'adsk','#f0a500','rgba(240,165,0,',d.adskPrice,d.adskOHLC,d.adskVWAP,d.adskVol,adskBB],
+   [nowChart, 'now', '#00d4aa','rgba(0,212,170,',d.nowPrice, d.nowOHLC, d.nowVWAP, d.nowVol, nowBB]
+  ].forEach(([ch,st,col,rgba,closes,ohlc,vwap,vol,bb]) => {
+    ch.data.labels = d.labels;
+    const ds0 = makePriceDataset(col,`${rgba}.07)`,st==='adsk'?'ADSK Price':'NOW Price',closes,ohlc,currentChartType,pt);
+    Object.assign(ch.data.datasets[0], ds0);
+    ch.data.datasets[1].data = vwap;
+    ch.data.datasets[2].data = vol;
+    ch.options.scales.yVol.max = Math.max(...vol)*5;
+    ch.data.datasets[3].data = bb.upper; ch.data.datasets[3].hidden = !bbOn;
+    ch.data.datasets[4].data = bb.middle; ch.data.datasets[4].hidden = !bbOn;
+    ch.data.datasets[5].data = bb.lower; ch.data.datasets[5].hidden = !bbOn;
+    ch.options.plugins.annotation.annotations = buildAnnotations(st);
+    ch.resetZoom(); ch.update('active');
+  });
+
+  // RSI panels
+  const rsiPs = [...activeIndicators].filter(i=>i.startsWith('rsi')).map(i=>+i.slice(3)).sort();
+  const showRSI = rsiPs.length > 0;
+  document.getElementById('adsk-rsi-panel').classList.toggle('visible', showRSI);
+  document.getElementById('now-rsi-panel').classList.toggle('visible',  showRSI);
+  if (showRSI) {
+    const cols = {5:'#ffa657',10:'#58a6ff',20:'#a371f7'};
+    [[adskRSIChart,d.adskPrice,'adsk'],[nowRSIChart,d.nowPrice,'now']].forEach(([rc,closes,st]) => {
+      rc.data.labels = d.labels;
+      rc.data.datasets = rsiPs.map(p => ({ label:`RSI(${p})`, data:calcRSI(closes,p), borderColor:cols[p]||'#8b949e', borderWidth:1.5, pointRadius:0, tension:.3 }));
+      document.getElementById(`${st}-rsi-label`).textContent = rsiPs.map(p=>`RSI(${p})`).join(' · ');
+      rc.update('active');
+    });
+  }
+
+  // Pattern legends (candle/ohlc daily only)
+  const showPat = isD && currentChartType !== 'line';
+  document.getElementById('adsk-pat-legend').style.display = showPat ? 'flex' : 'none';
+  document.getElementById('now-pat-legend').style.display  = showPat ? 'flex' : 'none';
+
+  document.getElementById('range-label').textContent = d.label;
+}
+
+/* ════════════════════════════════════════════
+   TOOLBAR EVENT LISTENERS
+   ════════════════════════════════════════════ */
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); currentRange = btn.dataset.range; applyChartUpdate();
+  });
+});
+document.querySelectorAll('.ct-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ct-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); currentChartType = btn.dataset.type; applyChartUpdate();
+  });
+});
+document.querySelectorAll('.ind-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const ind = btn.dataset.ind;
+    if (activeIndicators.has(ind)) { activeIndicators.delete(ind); btn.classList.remove('active'); }
+    else { activeIndicators.add(ind); btn.classList.add('active'); }
+    applyChartUpdate();
+  });
+});
+
+/* ════════════════════════════════════════════
+   DARK / LIGHT MODE TOGGLE
+   ════════════════════════════════════════════ */
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-bs-theme', theme);
+
+  const btn = document.getElementById('theme-toggle');
+  btn.innerHTML = isDark ? '<i class="fa fa-sun"></i>' : '<i class="fa fa-moon"></i>';
+  btn.title     = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+
+  // Update chart JS color vars
+  gridColor  = isDark ? '#30363d' : '#d0d7de';
+  mutedColor = isDark ? '#8b949e' : '#57606a';
+  const tooltipBg  = isDark ? '#1c2128' : '#ffffff';
+  const tooltipBdr = isDark ? '#30363d' : '#d0d7de';
+  const tooltipTtl = isDark ? '#e6edf3' : '#1f2328';
+  const tooltipBdy = isDark ? '#8b949e' : '#57606a';
+
+  // RSI charts
+  [adskRSIChart, nowRSIChart].forEach(ch => {
+    ch.options.scales.x.grid.color     = gc;
+    ch.options.scales.y.ticks.color    = mc;
+    ch.options.scales.y.grid.color     = gc;
+    ch.options.plugins.tooltip.backgroundColor = tooltipBg;
+    ch.options.plugins.tooltip.bodyColor       = tooltipBdy;
+    ch.update('none');
+  });
+  // Price charts (x + y + yVol scales, legend, tooltip)
+  [adskChart, nowChart].forEach(ch => {
+    ch.options.scales.x.ticks.color    = mutedColor;
+    ch.options.scales.x.grid.color     = gridColor;
+    ch.options.scales.y.ticks.color    = mutedColor;
+    ch.options.scales.y.grid.color     = gridColor;
+    ch.options.plugins.legend.labels.color     = mutedColor;
+    ch.options.plugins.tooltip.backgroundColor = tooltipBg;
+    ch.options.plugins.tooltip.borderColor     = tooltipBdr;
+    ch.options.plugins.tooltip.titleColor      = tooltipTtl;
+    ch.options.plugins.tooltip.bodyColor       = tooltipBdy;
+    ch.update('none');
+  });
+
+  // Volume profile charts (x + y scales + tooltip body)
+  [adskVPChart, nowVPChart].forEach(ch => {
+    ch.options.scales.x.ticks.color       = mutedColor;
+    ch.options.scales.x.grid.color        = gridColor;
+    ch.options.scales.x.title.color       = mutedColor;
+    ch.options.scales.y.ticks.color       = mutedColor;
+    ch.options.scales.y.grid.color        = gridColor;
+    ch.options.plugins.tooltip.backgroundColor = tooltipBg;
+    ch.options.plugins.tooltip.bodyColor       = tooltipBdy;
+    ch.update('none');
+  });
+
+  localStorage.setItem('dash-theme', theme);
+}
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// Restore preference on load
+const _saved = localStorage.getItem('dash-theme');
+if (_saved && _saved !== 'dark') applyTheme(_saved);
 
 /* ── ADSK VOLUME PROFILE ── */
-const adskVPL = ['$196–200','$200–205','$205–210','$210–215','$215–220 ◄POC','$220–225','$225–230','$230–235','$235–240','$240–245'];
-const adskVPD = [5.2,4.8,5.1,6.3,9.3,5.5,6.2,4.1,3.9,2.1];
-const adskVPC = adskVPD.map((_,i)=> i===4 ? '#f0a500' : (i<=1 ? 'rgba(248,81,73,.5)' : 'rgba(240,165,0,.35)'));
-
-new Chart(document.getElementById('adskVP'),{
+const adskVPChart = new Chart(document.getElementById('adskVP'),{
   type:'bar',
-  data:{labels:adskVPL, datasets:[{label:'Volume (M)',data:adskVPD,backgroundColor:adskVPC,borderRadius:3}]},
+  data:{
+    labels:['$196–200','$200–205','$205–210','$210–215','$215–220 ◄POC','$220–225','$225–230','$230–235','$235–240','$240–245'],
+    datasets:[{label:'Volume (M)',data:[5.2,4.8,5.1,6.3,9.3,5.5,6.2,4.1,3.9,2.1],borderRadius:3,
+      backgroundColor:[0,1,2,3,4,5,6,7,8,9].map(i=> i===4?'#f0a500':i<=1?'rgba(248,81,73,.5)':'rgba(240,165,0,.35)')}]
+  },
   options:{
     indexAxis:'y', responsive:true,
+    animation:{ duration:1200, easing:'easeOutQuart' },
     plugins:{legend:{display:false}, tooltip:{backgroundColor:'#1c2128',titleColor:'#f0a500',bodyColor:mutedColor}},
     scales:{
       x:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor},title:{display:true,text:'Volume (M shares)',color:mutedColor,font:{size:10}}},
-      y:{ticks:{color:'#e6edf3',font:{size:10}},grid:{color:gridColor}}
+      y:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor}}
     }
   }
 });
 
 /* ── NOW VOLUME PROFILE ── */
-const nowVPL = ['$85–88','$88–92','$92–96','$96–100','$100–105 ◄POC','$105–110'];
-const nowVPD = [4.2,7.5,8.9,10.2,12.1,2.3];
-const nowVPC = nowVPD.map((_,i)=> i===4 ? '#00d4aa' : 'rgba(0,212,170,.4)');
-
-new Chart(document.getElementById('nowVP'),{
+const nowVPChart = new Chart(document.getElementById('nowVP'),{
   type:'bar',
-  data:{labels:nowVPL, datasets:[{label:'Volume (M)',data:nowVPD,backgroundColor:nowVPC,borderRadius:3}]},
+  data:{
+    labels:['$85–88','$88–92','$92–96','$96–100','$100–105 ◄POC','$105–110'],
+    datasets:[{label:'Volume (M)',data:[4.2,7.5,8.9,10.2,12.1,2.3],borderRadius:3,
+      backgroundColor:[0,1,2,3,4,5].map(i=> i===4?'#00d4aa':'rgba(0,212,170,.4)')}]
+  },
   options:{
     indexAxis:'y', responsive:true,
+    animation:{ duration:1200, easing:'easeOutQuart' },
     plugins:{legend:{display:false}, tooltip:{backgroundColor:'#1c2128',titleColor:'#00d4aa',bodyColor:mutedColor}},
     scales:{
       x:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor},title:{display:true,text:'Volume (M shares)',color:mutedColor,font:{size:10}}},
-      y:{ticks:{color:'#e6edf3',font:{size:10}},grid:{color:gridColor}}
+      y:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor}}
     }
   }
 });
