@@ -18,8 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <!-- Chart.js Annotation Plugin -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
-<!-- Chart.js Financial (Candlestick / OHLC) -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js"></script>
+
 <!-- Hammer.js (required by zoom plugin) -->
 <script src="https://unpkg.com/hammerjs@2.0.8/hammer.min.js"></script>
 <!-- Chart.js Zoom Plugin -->
@@ -1149,6 +1148,70 @@ tippy('.tip-rpo', {
    ══════════════════════════════════════════════════════ */
 Chart.register(window['chartjs-plugin-annotation']);
 
+/* ── Custom Candle/OHLC plugin (replaces chartjs-chart-financial) ──
+   Datasets set _financialType ('candlestick'|'ohlc'|'heikinashi')
+   and _ohlc (array of {o,h,l,c}). The base dataset is an invisible
+   line chart that owns the x-axis category scale; this plugin draws
+   the actual shapes on top using the canvas 2D API.            ── */
+const CandlePlugin = {
+  id: 'candle',
+  afterDatasetsDraw(chart) {
+    const ds = chart.data.datasets[0];
+    if (!ds || !ds._financialType) return;
+    const ftype = ds._financialType;
+    if (ftype === 'line' || !ds._ohlc) return;
+
+    const ctx    = chart.ctx;
+    const meta   = chart.getDatasetMeta(0);
+    const pts    = meta.data;
+    const ohlc   = ds._ohlc;
+    if (!pts.length) return;
+
+    // Bar half-width: 65% of the spacing between adjacent points
+    const spacing = pts.length > 1 ? (pts[pts.length - 1].x - pts[0].x) / (pts.length - 1) : 20;
+    const hw = Math.max(2, spacing * 0.325);
+
+    pts.forEach((pt, i) => {
+      const d = ohlc[i];
+      if (!d || d.o == null) return;
+      const { o, h, l, c } = d;
+      const x  = pt.x;
+      const yO = chart.scales.y.getPixelForValue(o);
+      const yH = chart.scales.y.getPixelForValue(h);
+      const yL = chart.scales.y.getPixelForValue(l);
+      const yC = chart.scales.y.getPixelForValue(c);
+      const bull = c >= o;
+      const upCol  = ftype === 'heikinashi' ? '#00d4aa' : '#3fb950';
+      const clr    = bull ? upCol : '#f85149';
+      const fillBull = ftype === 'heikinashi' ? 'rgba(0,212,170,.82)' : 'rgba(63,185,80,.82)';
+      const fillBear = 'rgba(248,81,73,.82)';
+
+      ctx.save();
+      ctx.strokeStyle = clr;
+      ctx.lineWidth   = Math.max(1, Math.min(2, hw * 0.28));
+
+      /* High–Low wick */
+      ctx.beginPath(); ctx.moveTo(x, yH); ctx.lineTo(x, yL); ctx.stroke();
+
+      if (ftype === 'ohlc') {
+        /* Open tick (left) + Close tick (right) */
+        ctx.lineWidth = Math.max(1.5, hw * 0.35);
+        ctx.beginPath(); ctx.moveTo(x - hw, yO); ctx.lineTo(x, yO); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, yC); ctx.lineTo(x + hw, yC); ctx.stroke();
+      } else {
+        /* Candlestick / Heikin Ashi body */
+        const bTop = Math.min(yO, yC);
+        const bH   = Math.max(1, Math.abs(yC - yO));
+        ctx.fillStyle = bull ? fillBull : fillBear;
+        ctx.fillRect(x - hw, bTop, hw * 2, bH);
+        ctx.strokeRect(x - hw, bTop, hw * 2, bH);
+      }
+      ctx.restore();
+    });
+  }
+};
+Chart.register(CandlePlugin);
+
 let gridColor  = '#30363d';
 let mutedColor = '#8b949e';
 
@@ -1653,31 +1716,52 @@ function rebuildPriceCharts() {
   const nowAnn  = buildAnnotations('now');
 
   if (!isFinancial) {
-    /* ── LINE ─────────────────────────────────────────────── */
+    /* ── LINE ── (rgba includes trailing comma so templates produce valid CSS) */
     const lineDS = (color, rgba, lbl, closes, vwap, vol, bb) => [
       { type:'line', label:lbl, data:closes, borderColor:color, backgroundColor:`${rgba}.07)`, borderWidth:2.5, pointRadius:pt, pointHoverRadius:6, yAxisID:'y', tension:.3, fill:true, order:1 },
       { type:'line', label:'VWAP', data:vwap, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
       { type:'bar',  label:'Vol (M)', data:vol, backgroundColor:`${rgba}.15)`, yAxisID:'yVol', barPercentage:.6, order:3 },
       ...bbDatasets(color, rgba, bb, bbOn)
     ];
-    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:lineDS('#f0a500','rgba(240,165,0','ADSK Price',d.adskPrice,d.adskVWAP,d.adskVol,adskBB) }, options:sharedOpts(adskAnn,Math.max(...d.adskVol)*5) });
-    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:lineDS('#00d4aa','rgba(0,212,170','NOW Price',  d.nowPrice, d.nowVWAP, d.nowVol, nowBB)  }, options:sharedOpts(nowAnn, Math.max(...d.nowVol)*5)  });
+    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:lineDS('#f0a500','rgba(240,165,0,','ADSK Price',d.adskPrice,d.adskVWAP,d.adskVol,adskBB) }, options:sharedOpts(adskAnn,Math.max(...d.adskVol)*5) });
+    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:lineDS('#00d4aa','rgba(0,212,170,','NOW Price',  d.nowPrice, d.nowVWAP, d.nowVol, nowBB)  }, options:sharedOpts(nowAnn, Math.max(...d.nowVol)*5)  });
   } else {
-    /* ── CANDLESTICK / OHLC / HEIKIN ASHI ─────────────────── */
-    const finDS = (color, rgba, lbl, ohlcData, vwap, vol, bb, ctype) => [
-      { type:ctype, label:lbl,
-        data: d.labels.map((x, i) => ({ x, ...ohlcData[i] })),
-        color:{ up:color, down:'#f85149', unchanged:'#8b949e' },
-        borderColor:{ up:color, down:'#f85149', unchanged:'#8b949e' },
+    /* ── CANDLESTICK / OHLC / HEIKIN ASHI via CandlePlugin ──
+       An invisible line chart owns the category x-scale and provides
+       pixel positions. CandlePlugin reads ds._ohlc + ds._financialType
+       and draws the actual shapes using the canvas 2D API.        ── */
+    const finDS = (color, rgba, lbl, ohlcData, vwap, vol, bb) => [
+      { type:'line', label:lbl,
+        data: ohlcData.map(b => b.c),   // close prices → y-scale range
+        _ohlc: ohlcData,                 // full OHLC for CandlePlugin
+        _financialType: currentChartType,
+        borderWidth:0, pointRadius:0, pointHoverRadius:0,
+        backgroundColor:'transparent', fill:false,
         yAxisID:'y', order:1 },
       { type:'line', label:'VWAP', data:vwap, borderColor:'#a371f7', borderWidth:2, borderDash:[6,4], pointRadius:0, yAxisID:'y', tension:.3, order:2 },
       { type:'bar',  label:'Vol (M)', data:vol, backgroundColor:`${rgba}.15)`, yAxisID:'yVol', barPercentage:.6, order:3 },
       ...bbDatasets(color, rgba, bb, bbOn)
     ];
+    // Extend y-scale bounds to fully cover the High-Low range
+    const withRange = (opts, ohlcData) => {
+      opts.scales.y.min = +(Math.min(...ohlcData.map(b=>b.l)) * 0.9985).toFixed(2);
+      opts.scales.y.max = +(Math.max(...ohlcData.map(b=>b.h)) * 1.0015).toFixed(2);
+      // Tooltip: show OHLC values for the price dataset
+      opts.plugins.tooltip.callbacks = {
+        label(ctx) {
+          if (ctx.datasetIndex === 0 && ctx.chart.data.datasets[0]._ohlc) {
+            const b = ctx.chart.data.datasets[0]._ohlc[ctx.dataIndex];
+            if (b) return [`O $${b.o}  H $${b.h}  L $${b.l}  C $${b.c}`];
+          }
+          return `${ctx.dataset.label}: $${ctx.parsed.y?.toFixed(2) ?? ''}`;
+        }
+      };
+      return opts;
+    };
     const aLbl = currentChartType === 'heikinashi' ? 'ADSK (HA)' : 'ADSK OHLC';
     const nLbl = currentChartType === 'heikinashi' ? 'NOW (HA)'  : 'NOW OHLC';
-    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:finDS('#f0a500','rgba(240,165,0',aLbl,aOHLC,d.adskVWAP,d.adskVol,adskBB,candleType) }, options:sharedOpts(adskAnn,Math.max(...d.adskVol)*5) });
-    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:finDS('#00d4aa','rgba(0,212,170',nLbl,nOHLC,d.nowVWAP, d.nowVol, nowBB, candleType) }, options:sharedOpts(nowAnn, Math.max(...d.nowVol)*5) });
+    adskChart = new Chart(document.getElementById('adskChart'), { data:{ labels:d.labels, datasets:finDS('#f0a500','rgba(240,165,0,',aLbl,aOHLC,d.adskVWAP,d.adskVol,adskBB) }, options:withRange(sharedOpts(adskAnn,Math.max(...d.adskVol)*5),aOHLC) });
+    nowChart  = new Chart(document.getElementById('nowChart'),  { data:{ labels:d.labels, datasets:finDS('#00d4aa','rgba(0,212,170,',nLbl,nOHLC,d.nowVWAP, d.nowVol, nowBB)  }, options:withRange(sharedOpts(nowAnn, Math.max(...d.nowVol)*5), nOHLC)  });
   }
 
   /* ── Pattern legends (daily + financial only) ── */
@@ -1733,8 +1817,6 @@ function initGallery() {
     scales: noAxes,
     animation: { duration:900, easing:'easeOutQuart' }
   };
-  const finScales = { x:{ type:'category', display:false }, y:{ display:false } };
-
   /* Line */
   new Chart(document.getElementById('prev-line'), {
     data:{ labels:pLabels, datasets:[{
@@ -1745,37 +1827,36 @@ function initGallery() {
     options: miniBase
   });
 
+  /* Shared helper for financial mini charts via CandlePlugin */
+  const miniFinDS = (ohlcData, fType) => [{
+    type:'line',
+    data: ohlcData.map(b => b.c),
+    _ohlc: ohlcData,
+    _financialType: fType,
+    borderWidth:0, pointRadius:0, backgroundColor:'transparent', fill:false
+  }];
+  const miniFinOpts = (ohlcData) => {
+    const yMin = Math.min(...ohlcData.map(b=>b.l)) * 0.997;
+    const yMax = Math.max(...ohlcData.map(b=>b.h)) * 1.003;
+    return { ...miniBase, scales:{ x:{display:false}, y:{display:false, min:yMin, max:yMax} } };
+  };
+
   /* Candlestick */
   new Chart(document.getElementById('prev-candlestick'), {
-    data:{ labels:pLabels, datasets:[{
-      type:'candlestick',
-      data: pLabels.map((x,i) => ({ x, ...pOHLC[i] })),
-      color:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' },
-      borderColor:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' }
-    }]},
-    options:{ ...miniBase, scales: finScales }
+    data:{ labels:pLabels, datasets: miniFinDS(pOHLC, 'candlestick') },
+    options: miniFinOpts(pOHLC)
   });
 
   /* OHLC Bar */
   new Chart(document.getElementById('prev-ohlc'), {
-    data:{ labels:pLabels, datasets:[{
-      type:'ohlc',
-      data: pLabels.map((x,i) => ({ x, ...pOHLC[i] })),
-      color:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' },
-      borderColor:{ up:'#3fb950', down:'#f85149', unchanged:'#8b949e' }
-    }]},
-    options:{ ...miniBase, scales: finScales }
+    data:{ labels:pLabels, datasets: miniFinDS(pOHLC, 'ohlc') },
+    options: miniFinOpts(pOHLC)
   });
 
   /* Heikin Ashi */
   new Chart(document.getElementById('prev-heikinashi'), {
-    data:{ labels:pLabels, datasets:[{
-      type:'candlestick',
-      data: pLabels.map((x,i) => ({ x, ...pHA[i] })),
-      color:{ up:'#00d4aa', down:'#f85149', unchanged:'#8b949e' },
-      borderColor:{ up:'#00d4aa', down:'#f85149', unchanged:'#8b949e' }
-    }]},
-    options:{ ...miniBase, scales: finScales }
+    data:{ labels:pLabels, datasets: miniFinDS(pHA, 'heikinashi') },
+    options: miniFinOpts(pHA)
   });
 
   /* Renko */
