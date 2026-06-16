@@ -435,6 +435,35 @@
     color: var(--purple); background: rgba(163,113,247,.12);
   }
 
+  /* ── Professional Chart View ── */
+  .pro-outer {
+    background: #0b0e14; border: 1px solid #1e2530;
+    border-radius: 10px; overflow: hidden;
+  }
+  .pro-header {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 7px 14px; background: #111520; border-bottom: 1px solid #1e2530;
+    font-size: .78rem;
+  }
+  .pro-ticker { font-size: 1.1rem; font-weight: 900; }
+  .pro-last   { font-size: 1rem; font-weight: 700; color: #e6edf3; }
+  .pro-chg    { font-size: .8rem; font-weight: 700; }
+  .pro-ohlc   { font-size: .72rem; color: #8b949e; }
+  .pro-ohlc b { color: #e6edf3; font-weight: 600; }
+  .pro-sep    { width: 1px; height: 16px; background: #2a3140; }
+
+  .pro-panel {
+    position: relative; width: 100%;
+    border-bottom: 1px solid #1a2030;
+  }
+  .pro-panel:last-child { border-bottom: none; }
+  .pro-panel canvas { display: block; width: 100% !important; }
+  .pro-panel-label {
+    position: absolute; top: 4px; left: 8px;
+    font-size: .65rem; font-weight: 700; color: #3a4a60;
+    text-transform: uppercase; letter-spacing: .5px; pointer-events: none;
+  }
+
   /* ── Chart range toggle ── */
   .range-toggle { display: flex; gap: 4px; flex-wrap: wrap; }
   .range-btn {
@@ -483,6 +512,7 @@
 <div class="jump-nav" id="jump-nav">
   <a href="#sec-snapshot"><i class="fa fa-bolt me-1"></i>Snapshot</a>
   <a href="#sec-price"><i class="fa fa-chart-line me-1"></i>Price Charts</a>
+  <a href="#sec-pro-chart"><i class="fa fa-chart-candlestick me-1"></i>Pro Chart</a>
   <a href="#sec-gallery"><i class="fa fa-palette me-1"></i>Chart Gallery</a>
   <a href="#sec-sr"><i class="fa fa-shield-halved me-1"></i>S/R Levels</a>
   <a href="#sec-volume"><i class="fa fa-chart-bar me-1"></i>Volume Profile</a>
@@ -647,6 +677,66 @@
       <div class="zoom-hint"><i class="fa fa-hand-pointer me-1"></i>Scroll to zoom · Drag to pan</div>
     </div>
   </div>
+</div>
+
+<!-- ═══ PROFESSIONAL CHART VIEW — INTEGRATED VOLUME PROFILE ═══ -->
+<div class="sec-title mt-3" id="sec-pro-chart"><i class="fa fa-chart-candlestick me-2"></i>Professional Chart — Integrated Volume Profile (Candlestick · Volume · RSI)</div>
+<div class="row g-3 mb-4">
+
+  <!-- ADSK -->
+  <div class="col-12 col-xl-6" data-aos="fade-right" data-aos-duration="500">
+    <div class="pro-outer">
+      <div class="pro-header">
+        <span class="pro-ticker c-adsk">ADSK</span>
+        <span class="pro-last" id="pro-adsk-last">$191.29</span>
+        <span class="pro-chg c-neg" id="pro-adsk-chg">▼ $7.14 (-3.47%)</span>
+        <span class="pro-sep"></span>
+        <span class="pro-ohlc">O:&nbsp;<b id="pah-o">198.50</b>&nbsp; H:&nbsp;<b id="pah-h">199.80</b>&nbsp; L:&nbsp;<b id="pah-l">196.20</b>&nbsp; C:&nbsp;<b id="pah-c">197.80</b></span>
+        <span class="pro-sep"></span>
+        <span class="pro-ohlc">Vol:&nbsp;<b>1.9M</b></span>
+      </div>
+      <div class="pro-panel" style="height:300px">
+        <div class="pro-panel-label">Price · Vol Profile</div>
+        <canvas id="proAdskPrice" style="height:300px"></canvas>
+      </div>
+      <div class="pro-panel" style="height:100px">
+        <div class="pro-panel-label">Volume</div>
+        <canvas id="proAdskVol" style="height:100px"></canvas>
+      </div>
+      <div class="pro-panel" style="height:80px">
+        <div class="pro-panel-label">RSI (14)</div>
+        <canvas id="proAdskRSI" style="height:80px"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOW -->
+  <div class="col-12 col-xl-6" data-aos="fade-left" data-aos-duration="500">
+    <div class="pro-outer">
+      <div class="pro-header">
+        <span class="pro-ticker c-now">NOW</span>
+        <span class="pro-last" id="pro-now-last">$104.27</span>
+        <span class="pro-chg c-pos" id="pro-now-chg">▲ $2.14 (+2.10%)</span>
+        <span class="pro-sep"></span>
+        <span class="pro-ohlc">O:&nbsp;<b id="pnh-o">104.40</b>&nbsp; H:&nbsp;<b id="pnh-h">104.80</b>&nbsp; L:&nbsp;<b id="pnh-l">100.20</b>&nbsp; C:&nbsp;<b id="pnh-c">102.10</b></span>
+        <span class="pro-sep"></span>
+        <span class="pro-ohlc">Vol:&nbsp;<b>3.5M</b></span>
+      </div>
+      <div class="pro-panel" style="height:300px">
+        <div class="pro-panel-label">Price · Vol Profile</div>
+        <canvas id="proNowPrice" style="height:300px"></canvas>
+      </div>
+      <div class="pro-panel" style="height:100px">
+        <div class="pro-panel-label">Volume</div>
+        <canvas id="proNowVol" style="height:100px"></canvas>
+      </div>
+      <div class="pro-panel" style="height:80px">
+        <div class="pro-panel-label">RSI (14)</div>
+        <canvas id="proNowRSI" style="height:80px"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ CHART STYLE GALLERY ═══ -->
@@ -1796,6 +1886,239 @@ function applyChartUpdate() {
 }
 
 /* ════════════════════════════════════════════
+   VP SIDEBAR PLUGIN
+   Draws horizontal volume-profile bars on the right
+   side of any price chart whose config carries _vpConfig.
+   ════════════════════════════════════════════ */
+const VPSidebarPlugin = {
+  id: 'vpSidebar',
+  afterDraw(chart) {
+    const cfg = chart.config._vpConfig;
+    if (!cfg) return;
+    const { levels, volumes, currentPrice, pocIdx } = cfg;
+
+    const ctx = chart.ctx;
+    const ca  = chart.chartArea;
+    const ys  = chart.scales.y;
+    if (!ys || !ca) return;
+
+    const maxVol  = Math.max(...volumes);
+    const maxBarW = (ca.right - ca.left) * 0.22; // 22 % of chart width
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top);
+    ctx.clip();
+
+    levels.forEach(([lo, hi], i) => {
+      const y1   = ys.getPixelForValue(hi);
+      const y2   = ys.getPixelForValue(lo);
+      const yTop = Math.min(y1, y2);
+      const barH = Math.max(1, Math.abs(y2 - y1) - 1);
+      const barW = (volumes[i] / maxVol) * maxBarW;
+
+      if (i === pocIdx) {
+        ctx.fillStyle = 'rgba(240,165,0,.55)';       // gold — POC
+      } else if (lo <= currentPrice && currentPrice < hi) {
+        ctx.fillStyle = 'rgba(63,185,80,.45)';        // green — current price bucket
+      } else {
+        ctx.fillStyle = 'rgba(163,113,247,.38)';      // purple
+      }
+      ctx.fillRect(ca.right - barW, yTop, barW, barH);
+    });
+
+    // Dashed current-price line
+    if (currentPrice >= ys.min && currentPrice <= ys.max) {
+      const yP = ys.getPixelForValue(currentPrice);
+      ctx.strokeStyle = 'rgba(63,185,80,.9)';
+      ctx.lineWidth   = 1.4;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(ca.left, yP);
+      ctx.lineTo(ca.right, yP);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Price label box
+      const tag  = currentPrice.toFixed(2);
+      ctx.font   = 'bold 9px monospace';
+      const tw   = ctx.measureText(tag).width;
+      ctx.fillStyle = 'rgba(63,185,80,.15)';
+      ctx.fillRect(ca.right - tw - 12, yP - 8, tw + 10, 16);
+      ctx.strokeStyle = 'rgba(63,185,80,.6)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash([]);
+      ctx.strokeRect(ca.right - tw - 12, yP - 8, tw + 10, 16);
+      ctx.fillStyle  = '#3fb950';
+      ctx.textAlign  = 'right';
+      ctx.fillText(tag, ca.right - 3, yP + 4);
+      ctx.textAlign  = 'left';
+    }
+    ctx.restore();
+  }
+};
+Chart.register(VPSidebarPlugin);
+
+/* ════════════════════════════════════════════
+   PRO CHART INIT — 3-panel integrated VP view
+   ════════════════════════════════════════════ */
+function initProCharts() {
+  /* ── VP configuration objects ── */
+  const adskVP = {
+    levels:  [[196,200],[200,205],[205,210],[210,215],[215,220],[220,225],[225,230],[230,235],[235,240],[240,245]],
+    volumes: [5.2, 4.8, 5.1, 6.3, 9.3, 5.5, 6.2, 4.1, 3.9, 2.1],
+    pocIdx:  4,
+    currentPrice: 191.29
+  };
+  const nowVP = {
+    levels:  [[85,88],[88,92],[92,96],[96,100],[100,105],[105,110]],
+    volumes: [4.2, 7.5, 8.9, 10.2, 12.1, 2.3],
+    pocIdx:  4,
+    currentPrice: 104.27
+  };
+
+  /* ── shared colour helpers ── */
+  const volColors = ohlcArr =>
+    ohlcArr.map(b => b.c >= b.o ? 'rgba(63,185,80,.85)' : 'rgba(248,81,73,.85)');
+
+  /* ── minimal axis config ── */
+  const darkGrid = { color:'rgba(255,255,255,.05)', drawTicks:false };
+  const xHidden  = { display:false, grid:darkGrid };
+  const xShown   = { display:true, ticks:{ color:'#4a5568', font:{size:9}, maxTicksLimit:10 }, grid:darkGrid };
+  const yRight   = (mn, mx) => ({
+    position:'right', min:mn, max:mx,
+    ticks:{ color:'#5a6a80', font:{size:9}, maxTicksLimit:8 }, grid:darkGrid
+  });
+  const miniTooltip = { backgroundColor:'#131922', borderColor:'#2a3547', borderWidth:1, titleColor:'#e6edf3', bodyColor:'#8b949e', mode:'index', intersect:false };
+  const noLegend    = { display:false };
+  const noAnnotation = {};
+
+  /* ════ ADSK ════ */
+  const aLabels = dailyData.labels;
+  const aOHLC   = dailyData.adskOHLC;
+  const aClose  = dailyData.adskPrice;
+  const aVol    = dailyData.adskVol;
+  const aRSI    = calcRSI(aClose, 14);
+
+  // Price + VP
+  const proAdskPrice = new Chart(document.getElementById('proAdskPrice'), {
+    data: {
+      labels: aLabels,
+      datasets: [{
+        type:'line', label:'ADSK',
+        data: aClose, _ohlc: aOHLC, _financialType: 'candlestick',
+        borderWidth:0, pointRadius:0, backgroundColor:'transparent', fill:false, yAxisID:'y'
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{
+        ...miniTooltip,
+        callbacks:{ label(ctx) {
+          const b = aOHLC[ctx.dataIndex];
+          return b ? [`O $${b.o}  H $${b.h}  L $${b.l}  C $${b.c}`] : [];
+        }}
+      }, annotation:noAnnotation, zoom:zoomPlugin },
+      scales:{ x:xHidden, y:yRight(186, 248) }
+    }
+  });
+  proAdskPrice.config._vpConfig = adskVP;
+
+  // Volume (colored)
+  new Chart(document.getElementById('proAdskVol'), {
+    type:'bar',
+    data:{ labels:aLabels, datasets:[{
+      label:'Vol', data:aVol,
+      backgroundColor: volColors(aOHLC), borderWidth:0, barPercentage:.85
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{...miniTooltip, callbacks:{ label:ctx=>`Vol: ${ctx.parsed.y}M` }}, annotation:noAnnotation },
+      scales:{ x:xHidden, y:{ position:'right', ticks:{color:'#4a5568',font:{size:8},maxTicksLimit:3}, grid:darkGrid } }
+    }
+  });
+
+  // RSI
+  new Chart(document.getElementById('proAdskRSI'), {
+    type:'line',
+    data:{ labels:aLabels, datasets:[{ label:'RSI(14)', data:aRSI, borderColor:'rgba(255,255,255,.75)', borderWidth:1.5, pointRadius:0, tension:.3 }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{...miniTooltip, callbacks:{label:ctx=>`RSI: ${ctx.parsed.y?.toFixed(1)}`}},
+        annotation:{ annotations:{
+          ob:{ type:'line', yMin:70, yMax:70, borderColor:'rgba(248,81,73,.5)', borderWidth:1, borderDash:[4,3] },
+          os:{ type:'line', yMin:30, yMax:30, borderColor:'rgba(63,185,80,.5)',  borderWidth:1, borderDash:[4,3] }
+        }}
+      },
+      scales:{ x:xShown, y:{ position:'right', min:0, max:100, ticks:{color:'#4a5568',font:{size:8}, callback:v=>`${v}`, maxTicksLimit:3}, grid:darkGrid,
+        afterBuildTicks: a => { a.ticks = [{value:20},{value:50},{value:80}]; } } }
+    }
+  });
+
+  /* ════ NOW ════ */
+  const nLabels = dailyData.labels;
+  const nOHLC   = dailyData.nowOHLC;
+  const nClose  = dailyData.nowPrice;
+  const nVol    = dailyData.nowVol;
+  const nRSI    = calcRSI(nClose, 14);
+
+  // Price + VP
+  const proNowPrice = new Chart(document.getElementById('proNowPrice'), {
+    data: {
+      labels: nLabels,
+      datasets: [{
+        type:'line', label:'NOW',
+        data: nClose, _ohlc: nOHLC, _financialType: 'candlestick',
+        borderWidth:0, pointRadius:0, backgroundColor:'transparent', fill:false, yAxisID:'y'
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{
+        ...miniTooltip,
+        callbacks:{ label(ctx) {
+          const b = nOHLC[ctx.dataIndex];
+          return b ? [`O $${b.o}  H $${b.h}  L $${b.l}  C $${b.c}`] : [];
+        }}
+      }, annotation:noAnnotation, zoom:zoomPlugin },
+      scales:{ x:xHidden, y:yRight(83, 112) }
+    }
+  });
+  proNowPrice.config._vpConfig = nowVP;
+
+  // Volume (colored)
+  new Chart(document.getElementById('proNowVol'), {
+    type:'bar',
+    data:{ labels:nLabels, datasets:[{
+      label:'Vol', data:nVol,
+      backgroundColor: volColors(nOHLC), borderWidth:0, barPercentage:.85
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{...miniTooltip, callbacks:{label:ctx=>`Vol: ${ctx.parsed.y}M`}}, annotation:noAnnotation },
+      scales:{ x:xHidden, y:{ position:'right', ticks:{color:'#4a5568',font:{size:8},maxTicksLimit:3}, grid:darkGrid } }
+    }
+  });
+
+  // RSI
+  new Chart(document.getElementById('proNowRSI'), {
+    type:'line',
+    data:{ labels:nLabels, datasets:[{ label:'RSI(14)', data:nRSI, borderColor:'rgba(255,255,255,.75)', borderWidth:1.5, pointRadius:0, tension:.3 }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:noLegend, tooltip:{...miniTooltip, callbacks:{label:ctx=>`RSI: ${ctx.parsed.y?.toFixed(1)}`}},
+        annotation:{ annotations:{
+          ob:{ type:'line', yMin:70, yMax:70, borderColor:'rgba(248,81,73,.5)', borderWidth:1, borderDash:[4,3] },
+          os:{ type:'line', yMin:30, yMax:30, borderColor:'rgba(63,185,80,.5)',  borderWidth:1, borderDash:[4,3] }
+        }}
+      },
+      scales:{ x:xShown, y:{ position:'right', min:0, max:100, ticks:{color:'#4a5568',font:{size:8}, callback:v=>`${v}`, maxTicksLimit:3}, grid:darkGrid,
+        afterBuildTicks: a => { a.ticks = [{value:20},{value:50},{value:80}]; } } }
+    }
+  });
+}
+
+/* ════════════════════════════════════════════
    CHART STYLE GALLERY — live mini-chart previews
    ════════════════════════════════════════════ */
 function initGallery() {
@@ -1903,6 +2226,7 @@ function initGallery() {
 
 /* bootstrap initial render */
 rebuildPriceCharts();
+initProCharts();
 initGallery();
 
 /* ════════════════════════════════════════════
