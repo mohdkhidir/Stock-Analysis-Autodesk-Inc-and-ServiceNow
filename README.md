@@ -1,7 +1,9 @@
 # Stock Analysis Dashboard — ADSK vs NOW
 
 **Autodesk, Inc. (ADSK) · ServiceNow, Inc. (NOW)**  
-Interactive stock analysis dashboard built with Chart.js · Prices last updated: June 16, 2026
+Interactive stock analysis dashboard built with Chart.js · Last updated: **June 22, 2026** · Data as of Jun 18, 2026 (last trading day — Jun 19 = Juneteenth holiday)
+
+[![GitHub](https://img.shields.io/badge/GitHub-Stock--Analysis-blue?logo=github)](https://github.com/mohdkhidir/Stock-Analysis-Autodesk-Inc-and-ServiceNow)
 
 ---
 
@@ -9,96 +11,191 @@ Interactive stock analysis dashboard built with Chart.js · Prices last updated:
 
 Open `dashboard.html` directly in any browser — no server or build step required.
 
+```
+file:///C:/path/to/dashboard.html
+```
+
+---
+
+## What's New — June 22, 2026
+
+- **US Economic Indicators** (12 indicators, 2021–present) with ★ impact ratings, Graph View + sortable/filterable Table View
+- **Federal Reserve** — Jun 17, 2026 FOMC decision, rate history chart, executive summary
+- **Major Market Indices** — S&P 500, NASDAQ, DJIA, FTSE 100 KPI cards + normalized performance chart
+- **Sector Heatmap** — 11 S&P 500 sectors with YTD returns, color-coded grid + ranked bar chart
+- **Company Logos** — Autodesk, ServiceNow, index providers & sector companies via Google favicon service
+- **Price Update** — ADSK $193.82 (52-wk low $190.86 touched, RSI 28.45 oversold) · NOW $95.04 (broke $98 support on restructuring)
+- **Analyst update** — ADSK: 34 analysts, avg PT $318.53, high $456 · NOW: 48 analysts, avg PT $141.98
+
 ---
 
 ## Features
 
-### Chart Controls
+### Stock Analysis — ADSK & NOW
+
+#### Chart Controls
 
 | Control | Options |
 |---|---|
-| **Range** | Daily (May 19–Jun 13) · Weekly (Mar 3–Jun 13, 15 wks) · Hourly (Apr 1–Jun 13, ~385 bars) |
+| **Range** | Daily (May 19–Jun 18) · Weekly (Mar 3–Jun 18, 16 wks) · Hourly (Apr 1–Jun 13, ~385 bars) |
 | **Style** | Line · Candlestick · OHLC Bar · Heikin Ashi · Renko |
 | **Indicators** | RSI(5) · RSI(10) · RSI(20) · Bollinger Bands · Fibonacci Retracement |
 
-### Chart Styles
+#### Chart Styles
 
 | Style | Description |
 |---|---|
 | **Line** | Smooth area chart with fill. Best for long-range trend direction. |
 | **Candlestick** | OHLC boxes — green bull, red bear. Best for pattern recognition. |
 | **OHLC Bar** | Classic open/close tick-mark stems. Compact, institutional style. |
-| **Heikin Ashi** | Noise-filtered smoothed candles (`haO=(prevO+prevC)/2`, `haC=(O+H+L+C)/4`). Consecutive same-colour = strong trend. |
-| **Renko** | ATR-sized price bricks with no time axis. Filters noise, shows pure price structure. |
+| **Heikin Ashi** | Noise-filtered smoothed candles. Consecutive same-colour = strong trend. |
+| **Renko** | ATR-sized price bricks with no time axis. Filters noise, pure price structure. |
 
-> All 5 styles are shown as **live mini-chart previews** in the Chart Style Gallery — click any card to instantly apply the style to both main charts.
+> All 5 styles shown as **live mini-chart previews** in the Chart Style Gallery — click to apply instantly.
 
-### Indicators Detail
+#### Indicators
 
-- **RSI** — multi-select (RSI 5, 10, 20 can all be active simultaneously); sub-panel below each chart with overbought (70) and oversold (30) reference lines
-- **Bollinger Bands** — BB(10) on daily/weekly, BB(20) on hourly; upper/middle/lower bands with translucent channel fill
-- **Fibonacci Retracement** — auto-computed from the visible period's high/low; 7 levels annotated (0%, 23.6%, 38.2%, 50%, 61.8%, 78.6%, 100%)
+- **RSI** — multi-select RSI 5, 10, 20; sub-panel with OB/OS lines at 70/30
+- **Bollinger Bands** — BB(10) daily/weekly, BB(20) hourly; translucent channel fill
+- **Fibonacci Retracement** — auto-computed 7 levels (0%–100%) from visible period high/low
 
-### Candle Patterns (Daily · Candlestick or Heikin Ashi mode)
+#### Candle Patterns (Daily · Candlestick or Heikin Ashi)
 
-| Stock | Patterns Annotated |
+| Stock | Patterns |
 |---|---|
-| ADSK | Shooting Star · Bearish Marubozu · Bearish Harami · Doji (Exhaustion) · Hammer (Potential Reversal) |
-| NOW | Bullish Engulfing · Shooting Star (Pause) · Doji at Top · Shooting Star (OB Warning) · Evening Doji |
+| ADSK | Shooting Star · Bearish Marubozu · Bearish Harami · Doji · Hammer |
+| NOW | Bullish Engulfing · Shooting Star · Doji at Top · Evening Doji |
 
-Overbought ($105–108) and oversold ($188–196) zone bands also drawn.
+#### Analysis Sections
 
-### Analysis Sections
-
-- **Chart Style Gallery** — 5 live mini-chart previews, clickable to apply style; syncs bidirectionally with toolbar
-- **Support & Resistance card** — Daily + Weekly S/R levels for both stocks with colour-coded badges
-- **Volume Profile** — 30-day POC, HVN, LVN charts with written description + summary findings per stock
-- **Technical Analysis table** — EMA, SMA, VWAP, RSI, MACD, volume trend comparison with Tippy.js tooltips
-- **Fundamental Analysis** — Revenue, margins, guidance, AI monetization head-to-head
-- **Corporate Finance Actions** — Chronological event log with SEC source links
-- **Analyst Ratings** — Consensus, price targets, buy/hold/sell ratios with animated progress bars
-- **Valuation Comparison** — P/E, EV/Rev, FCF yield, gross margin side-by-side
-- **Verdict & Scorecard** — Star ratings and action plans for both stocks
-
-### UI/UX
-
-- Dark / Light mode toggle with smooth CSS variable transitions (persists via `localStorage`)
-- Scroll-to-zoom + drag-to-pan on all price charts; Reset button per chart
-- Scroll progress bar at top · Back-to-top floating button · Section jump nav
-- AOS scroll-in animations · CountUp animated numbers on key metrics
-- Tippy.js rich tooltips on RSI, MACD, EMA, SMA, VWAP, cRPO badges
-- Live pulse dot on date badge · Sticky navbar with blur backdrop
-- Fully responsive (Bootstrap 5.3) · Custom scrollbar
+| Section | Contents |
+|---|---|
+| **Snapshot Cards** | Live price, market cap, P/E, revenue, analyst rating, PT — with company logos |
+| **Pro Chart** | Candlestick + volume + RSI(14) integrated pro view with Volume Profile sidebar |
+| **Chart Style Gallery** | 5 live mini-chart previews |
+| **Support & Resistance** | Daily + Weekly S/R levels with colour-coded badges |
+| **Volume Profile** | 30-day POC, HVN, LVN bar charts + written analysis |
+| **Technical Analysis** | MA, VWAP, RSI, MACD, ADX comparison table with Tippy.js tooltips |
+| **Fundamental Analysis** | Revenue, margins, guidance, AI monetization head-to-head |
+| **Corporate Actions** | Chronological event log with SEC source links |
+| **Analyst Ratings** | Consensus, price targets, buy/hold/sell ratios with animated progress bars |
+| **Valuation** | P/E, EV/Rev, FCF yield, gross margin side-by-side |
+| **Verdict & Scorecard** | Star ratings and action plans |
 
 ---
 
-## Key Findings (Updated Jun 16, 2026)
+### US Economic Indicators (NEW)
+
+12 indicators sourced from Census Bureau, BLS, BEA, and the Federal Reserve — all with quarterly history from Q1 2021 to Q2 2026.
+
+| Indicator | Source | ★ Impact |
+|---|---|---|
+| GDP Growth Rate | BEA | ★★★★★ |
+| CPI Inflation | BLS | ★★★★★ |
+| Unemployment Rate | BLS | ★★★★★ |
+| Non-Farm Payrolls | BLS | ★★★★★ |
+| Fed Funds Rate | Federal Reserve | ★★★★★ |
+| Retail Sales | Census Bureau | ★★★★ |
+| Consumer Confidence | Conference Board | ★★★★ |
+| Industrial Production | Federal Reserve | ★★★★ |
+| Housing Starts | Census Bureau | ★★★ |
+| Building Permits | Census Bureau | ★★★ |
+| Trade Balance | Census / BEA | ★★★ |
+| Durable Goods Orders | Census Bureau | ★★★ |
+
+**Graph View** — click any indicator button to render its bar chart with trend color coding.  
+**Table View** — sortable by any column (click header) · filterable by text, star rating, and trend direction · click row to view chart.
+
+---
+
+### Federal Reserve Section (NEW)
+
+- **Jun 17, 2026 FOMC Decision** — Hold at 3.50–3.75% (12–0 unanimous) · Chair Kevin Warsh's first meeting
+- **Rate History Chart** — Full cycle from 0.25% floor (2021) → 5.5% peak (Jul 2023) → 3.75% hold (Jun 2026)
+- **Hawkish Shift** — Dot plot flipped: 17/18 officials see upside inflation risk; median now implies hike by end-2026
+- **Executive Summary** — Stagflation-lite (GDP 1.6%, CPI 4.2%, Consumer Confidence 48.9), markets still at ATH on AI thesis
+
+---
+
+### Major Market Indices (NEW)
+
+KPI cards with current level, daily change, YTD, 1-year, and since-Q1-2021 returns.
+
+| Index | Level (Jun 22) | YTD | Since Q1'21 |
+|---|---|---|---|
+| S&P 500 | 7,466 | +14.2% | +102% |
+| NASDAQ | 26,518 | +39.1% | +106% |
+| DJIA | 51,650 | +20.1% | +67% |
+| FTSE 100 | 10,363 | +10.0% | +58% |
+
+Normalized performance chart (base 100 = Q1 2021) with key event annotations (CPI peak, rate peak, rate cuts).
+
+---
+
+### Sector Heatmap (NEW)
+
+Color-coded grid of all 11 S&P 500 sectors with:
+- YTD return (%) and market cap weighting
+- Representative company logo (NVIDIA, JPMorgan, Exxon, Meta, Amazon, etc.)
+- Horizontal ranked bar chart view
+- Color scale: strong green (>10%) → yellow (flat) → strong red (<-8%)
+
+| Sector | YTD | Wt |
+|---|---|---|
+| Energy (XLE) | +12.4% | 4.2% |
+| Healthcare (XLV) | +11.2% | 12.8% |
+| Financials (XLF) | +8.9% | 13.1% |
+| Utilities (XLU) | +6.3% | 2.5% |
+| Industrials (XLI) | +4.5% | 8.5% |
+| Consumer Staples (XLP) | +3.8% | 6.0% |
+| Comm. Services (XLC) | +2.1% | 8.7% |
+| Real Estate (XLRE) | +2.0% | 2.3% |
+| Materials (XLB) | -1.8% | 2.4% |
+| Consumer Disc. (XLY) | -5.2% | 10.0% |
+| Technology (XLK) | -8.5% | 29.5% |
+
+---
+
+### Company Logos
+
+Logos loaded via **Google Favicon Service** (`google.com/s2/favicons`) — no API key required, always accessible. Applied in:
+- Navbar brand bar
+- ADSK & NOW snapshot cards
+- Pro chart headers
+- Verdict section titles
+- S&P 500 / NASDAQ / DJIA / FTSE 100 index cards
+- Federal Reserve decision card
+- Census Bureau / BLS / BEA section header
+- All 11 sector heatmap cells
+
+---
+
+### UI/UX
+
+- Dark / Light mode toggle (persists via `localStorage`)
+- Scroll-to-zoom + drag-to-pan on all price charts with Reset button
+- Scroll progress bar · Back-to-top button · Section jump nav (13 sections)
+- AOS scroll-in animations · CountUp animated number counters
+- Tippy.js tooltips on RSI, MACD, EMA, SMA, VWAP, cRPO
+- Live pulse dot on date badge · Sticky navbar with blur backdrop
+- Fully responsive — Bootstrap 5.3 · Custom scrollbar
+
+---
+
+## Key Findings — June 22, 2026
 
 | | ADSK | NOW |
 |---|---|---|
-| Price | $191.29 ↓ -3.47% (Jun 16 est.) | $104.27 ↑ +2.10% (Jun 15) |
-| Market Cap | $50.5B | $107.5B |
-| Rating | ⭐⭐⭐⭐ 4.0/5 | ⭐⭐⭐⭐ 4.2/5 |
-| Recommendation | **Speculative Buy — Accumulate on Weakness** | **Buy / Hold — Momentum Play** |
-| Avg 12M Analyst Target | $315.00 (+64.7% upside) | $146.00 (+40.0% upside) |
-| High / Low PT | $385 (Barclays) / $262 (BMO) | $236 (Bernstein) / $100 |
-| Technical Signal | 🔴 Bearish — below all MAs | 🟢 Bullish — above VWAP & short-term MAs |
-| Volume Profile | Distribution — POC $215–220 acts as overhead resistance | Accumulation — trading inside POC $100–105 |
-
-### Current Support & Resistance
-
-**ADSK** — Daily: S2 $188 (major) · S3 $180 (extreme) · R1 $203–205 · R2 $215–220 (VWAP + POC)  
-**NOW** — Daily: S1 $98–100 (VWAP + HVN) · R1 $105–108 (VAH) · R2 $115 (measured move target)
-
-### Latest Analyst Actions (Jun 2026)
-
-| Firm | Stock | Rating | PT | Move |
-|---|---|---|---|---|
-| Barclays | ADSK | Overweight | $385 | ↑ from $355 |
-| RBC Capital | ADSK | Outperform | $305 | ↓ from $335 |
-| BMO Capital | ADSK | Market Perform | $262 | ↓ from $279 |
-| Bernstein | NOW | Outperform | $236 | ↑ from $226 |
-| Morgan Stanley | NOW | Overweight | $263 | ↑ from split-adj prior |
+| **Price** | $193.82 ↑ (+0.39%) · Jun 18 | $95.04 ↓ (-0.46%) · Jun 18 |
+| **52-Wk Range** | $190.86 – $329.09 (**new 52-wk low Jun 18!**) | $81.24 – $211.48 |
+| **Market Cap** | $40.9B | $98.0B |
+| **P/E (TTM)** | **28.31×** | 56.58× |
+| **RSI (14)** | **28.45 — DEEPLY OVERSOLD** | 40.81 — neutral |
+| **Volume Jun 18** | 9.2M (3.5× avg — exhaustion?) | 24.9M (5.2× avg — capitulation?) |
+| **Rating** | ⭐⭐⭐⭐ 4.0/5 | ⭐⭐⭐⭐ 4.0/5 |
+| **Recommendation** | **Speculative Buy — RSI Oversold** | **Hold — Await $90–93 Support** |
+| **Avg PT (12M)** | $318.53 (+64.3%) · 34 analysts | $141.98 (+49.4%) · 48 analysts |
+| **Technical** | 🔴 Bearish — all MAs bearish | 🔴 Bearish Reversal — broke $98 |
 
 ---
 
@@ -107,26 +204,27 @@ Overbought ($105–108) and oversold ($188–196) zone bands also drawn.
 | Library | Version | Purpose |
 |---|---|---|
 | Chart.js | 4.4.3 | Core charting engine |
-| CandlePlugin | custom | Candlestick / OHLC / Heikin Ashi (native canvas plugin — no external dep) |
-| chartjs-plugin-annotation | 3.0.1 | Event lines, Fib levels, candle pattern boxes, S/R zone bands |
-| chartjs-plugin-zoom | 2.0.1 | Scroll-to-zoom + drag-to-pan (requires Hammer.js 2.0.8) |
+| CandlePlugin | custom | Candlestick / OHLC / Heikin Ashi (native canvas, no external dep) |
+| chartjs-plugin-annotation | 3.0.1 | Event lines, Fib levels, candle pattern boxes, S/R zones |
+| chartjs-plugin-zoom | 2.0.1 | Scroll-to-zoom + drag-to-pan (Hammer.js 2.0.8) |
 | Bootstrap | 5.3.3 | Responsive layout, dark/light `data-bs-theme` |
 | FontAwesome | 6.5.0 | Icons throughout |
 | AOS | 2.3.4 | Scroll-triggered fade animations |
 | Tippy.js | 6 | Rich indicator tooltips |
-| CountUp.js | 2.8.0 | Animated number counters on prices/targets |
+| CountUp.js | 2.8.0 | Animated number counters |
+| Google Favicon API | — | Company & index logos (no API key) |
 
-All dependencies loaded via CDN — no `npm install` or build step needed.
+All dependencies via CDN — no `npm install` or build step needed.
 
-> **Note on CandlePlugin:** `chartjs-chart-financial` (v0.2.x) was removed because it was built for Chart.js 3.x and corrupted the controller registry on load with Chart.js 4.4.3. The replacement is a self-contained `afterDatasetsDraw` plugin that draws candlestick/OHLC/HA shapes directly on the canvas using the 2D API, with zero external dependencies.
+> **CandlePlugin Note:** `chartjs-chart-financial` (v0.2.x) was removed — built for Chart.js 3.x, crashed on 4.4.3. Replaced with a self-contained `afterDatasetsDraw` plugin drawing directly on canvas 2D API.
 
 ---
 
 ## Files
 
 ```
-├── dashboard.html   # Full interactive dashboard (single HTML file, open directly in browser)
-├── CLAUDE.md        # Comprehensive markdown analysis — all data tables, S/R, candle patterns, VP findings
+├── dashboard.html   # Full interactive dashboard — open directly in browser
+├── CLAUDE.md        # Comprehensive markdown analysis — all data tables, S/R, candle patterns, VP
 └── README.md        # This file
 ```
 
@@ -134,24 +232,30 @@ All dependencies loaded via CDN — no `npm install` or build step needed.
 
 ## Data Sources
 
-| Source | Link |
+| Source | URL |
 |---|---|
 | StockAnalysis ADSK | https://stockanalysis.com/stocks/adsk/ |
 | StockAnalysis NOW | https://stockanalysis.com/stocks/now/ |
+| Yahoo Finance ADSK | https://finance.yahoo.com/quote/ADSK/ |
+| Yahoo Finance NOW | https://finance.yahoo.com/quote/NOW/ |
 | ADSK SEC Filings | https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000769397 |
 | NOW SEC Filings | https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001373715 |
 | ADSK Q1 FY27 Earnings | https://www.sec.gov/Archives/edgar/data/0000769397/000076939726000041/q127pressrelease.htm |
 | ADSK MaintainX 8-K | https://www.sec.gov/Archives/edgar/data/0000769397/000121390026062125/ea029248301ex99-1.htm |
 | NOW Q1 FY26 Earnings | https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000054/erq1fy26.htm |
-| Barclays ADSK PT | https://www.tipranks.com/news/the-fly/autodesk-price-target-raised-to-385-from-355-at-barclays-thefly |
-| RBC Capital ADSK PT | https://finance.yahoo.com/news/rbc-capital-lowers-price-target-153950473.html |
 | Barchart ADSK Technical | https://www.barchart.com/stocks/quotes/ADSK/technical-analysis |
-| TipRanks ADSK | https://www.tipranks.com/stocks/adsk/forecast |
+| Barchart NOW Technical | https://www.barchart.com/stocks/quotes/NOW/technical-analysis |
 | WallStreetZen ADSK | https://www.wallstreetzen.com/stocks/us/nasdaq/adsk/stock-forecast |
 | StockAnalysis NOW Ratings | https://stockanalysis.com/stocks/now/ratings/ |
-| Bernstein / Yahoo Finance | https://finance.yahoo.com/markets/stocks/articles/bernstein-raises-price-target-servicenow-101343680.html |
+| Census Bureau Economic Indicators | https://www.census.gov/economic-indicators/ |
+| Bureau of Labor Statistics | https://www.bls.gov/ |
+| Bureau of Economic Analysis | https://www.bea.gov/ |
+| Federal Reserve FOMC | https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm |
+| Fed Jun 17 Decision | https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm |
+| ADSK 52-Wk Low | https://www.investing.com/news/company-news/autodesk-stock-hits-52week-low-at-19142-usd-93CH-4750581 |
+| NOW Restructuring Drop | https://tradersunion.com/news/financial-news/show/2395960-servicenow-drops-4-53percent-to-usd96-74/ |
 | ServiceNow IR | https://investor.servicenow.com/stock-info/default.aspx |
 
 ---
 
-> **Disclaimer:** For informational and educational purposes only. Not financial advice. Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.
+> **Disclaimer:** For informational and educational purposes only. Not financial advice. All data sourced from publicly available filings and financial data providers as of June 22, 2026 (last trading day June 18, 2026). Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.
