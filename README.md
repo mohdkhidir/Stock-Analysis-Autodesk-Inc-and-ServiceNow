@@ -1,7 +1,7 @@
 # Stock Analysis Dashboard — ADSK vs NOW
 
 **Autodesk, Inc. (ADSK) · ServiceNow, Inc. (NOW)**  
-Interactive stock analysis dashboard built with Chart.js · Last updated: **June 22, 2026** · Data as of Jun 18, 2026 (last trading day — Jun 19 = Juneteenth holiday)
+Interactive stock analysis dashboard built with Chart.js · Last updated: **June 23, 2026** · Data as of Jun 22, 2026 close · Jun 23 pre-market: ADSK $190.00 (+1.21%), NOW $94.36 (+1.45%)
 
 [![GitHub](https://img.shields.io/badge/GitHub-Stock--Analysis-blue?logo=github)](https://github.com/mohdkhidir/Stock-Analysis-Autodesk-Inc-and-ServiceNow)
 
@@ -17,15 +17,19 @@ file:///C:/path/to/dashboard.html
 
 ---
 
-## What's New — June 22, 2026
+## What's New — June 23, 2026
 
-- **US Economic Indicators** (12 indicators, 2021–present) with ★ impact ratings, Graph View + sortable/filterable Table View
-- **Federal Reserve** — Jun 17, 2026 FOMC decision, rate history chart, executive summary
-- **Major Market Indices** — S&P 500, NASDAQ, DJIA, FTSE 100 KPI cards + normalized performance chart
-- **Sector Heatmap** — 11 S&P 500 sectors with YTD returns, color-coded grid + ranked bar chart
-- **Company Logos** — Autodesk, ServiceNow, index providers & sector companies via Google favicon service
-- **Price Update** — ADSK $193.82 (52-wk low $190.86 touched, RSI 28.45 oversold) · NOW $95.04 (broke $98 support on restructuring)
-- **Analyst update** — ADSK: 34 analysts, avg PT $318.53, high $456 · NOW: 48 analysts, avg PT $141.98
+- **Price Update** — ADSK **$187.72** (new 52-wk low $185.50 hit Jun 22, RSI 26.00 / RSI-9 20.24 extreme oversold) · NOW **$93.01** (-2.14%, 24.8M shares, approaching $90–92 support)
+- **ADSK new 52-wk low** — $185.50 intraday Jun 22; closed $187.72 (-3.15%); ADX 39.43 strong downtrend; volume 4.6M (exhaustion signal); pre-market Jun 23: $190.00 (+1.21%)
+- **NOW continued decline** — $93.01 Jun 22 close; 24.8M shares (5.2× avg sustained); RSI 39.25 approaching oversold; Jul 22 earnings upcoming
+- **New analyst actions** — Exane BNP Paribas initiated ADSK Buy/$295; Citi maintained ADSK Hold/$252; Benchmark raised NOW to $130; BofA initiated NOW Buy/$130
+- **Market indices updated** — S&P 500 7,472 (-0.37%), NASDAQ 26,167 (-1.32% Big Tech drag), DJIA 51,713 (+0.29%) as of Jun 22
+- **Charts extended** — Jun 22 daily and weekly bars added; ADSK RSI extreme oversold zone visible
+- **Upside recalculated** — ADSK +69.7% to avg PT; NOW +52.7% to avg PT (from new lower prices)
+- **NOW analyst mix updated** — 43 Buy / 4 Hold / 1 Sell (89.6% buy ratio); 1 Strong Sell added
+
+### Previous Update — June 22, 2026
+- US Economic Indicators (12), Federal Reserve FOMC Jun 17, Market Indices, Sector Heatmap, Company Logos
 
 ---
 
@@ -37,7 +41,7 @@ file:///C:/path/to/dashboard.html
 
 | Control | Options |
 |---|---|
-| **Range** | Daily (May 19–Jun 18) · Weekly (Mar 3–Jun 18, 16 wks) · Hourly (Apr 1–Jun 13, ~385 bars) |
+| **Range** | Daily (May 19–Jun 22) · Weekly (Mar 3–Jun 22, 17 wks) · Hourly (Apr 1–Jun 13, ~385 bars) |
 | **Style** | Line · Candlestick · OHLC Bar · Heikin Ashi · Renko |
 | **Indicators** | RSI(5) · RSI(10) · RSI(20) · Bollinger Bands · Fibonacci Retracement |
 
@@ -121,12 +125,12 @@ file:///C:/path/to/dashboard.html
 
 KPI cards with current level, daily change, YTD, 1-year, and since-Q1-2021 returns.
 
-| Index | Level (Jun 22) | YTD | Since Q1'21 |
-|---|---|---|---|
-| S&P 500 | 7,466 | +14.2% | +102% |
-| NASDAQ | 26,518 | +39.1% | +106% |
-| DJIA | 51,650 | +20.1% | +67% |
-| FTSE 100 | 10,363 | +10.0% | +58% |
+| Index | Level (Jun 22) | Daily Chg | YTD | Since Q1'21 |
+|---|---|---|---|---|
+| S&P 500 | 7,472 | -0.37% | +14.2% | +102% |
+| NASDAQ | 26,167 | -1.32% (Big Tech drag) | +39.1% | +106% |
+| DJIA | 51,713 | +0.29% | +20.1% | +67% |
+| FTSE 100 | 10,364 | -0.34% (Jun 19) | +10.0% | +58% |
 
 Normalized performance chart (base 100 = Q1 2021) with key event annotations (CPI peak, rate peak, rate cuts).
 
@@ -182,20 +186,26 @@ Logos loaded via **Google Favicon Service** (`google.com/s2/favicons`) — no AP
 
 ---
 
-## Key Findings — June 22, 2026
+## Key Findings — June 23, 2026
 
 | | ADSK | NOW |
 |---|---|---|
-| **Price** | $193.82 ↑ (+0.39%) · Jun 18 | $95.04 ↓ (-0.46%) · Jun 18 |
-| **52-Wk Range** | $190.86 – $329.09 (**new 52-wk low Jun 18!**) | $81.24 – $211.48 |
-| **Market Cap** | $40.9B | $98.0B |
-| **P/E (TTM)** | **28.31×** | 56.58× |
-| **RSI (14)** | **28.45 — DEEPLY OVERSOLD** | 40.81 — neutral |
-| **Volume Jun 18** | 9.2M (3.5× avg — exhaustion?) | 24.9M (5.2× avg — capitulation?) |
+| **Price (Jun 22 close)** | **$187.72** ↓ (-3.15%) | **$93.01** ↓ (-2.14%) |
+| **Pre-market Jun 23** | $190.00 (+1.21%) | $94.36 (+1.45%) |
+| **52-Wk Range** | **$185.50** – $329.09 (**new 52-wk low Jun 22!**) | $81.24 – $211.48 |
+| **Market Cap** | $39.6B | $95.9B |
+| **P/E (TTM)** | **27.42×** | 55.37× |
+| **Forward P/E** | **14.56×** | 21.45× |
+| **RSI (14)** | **26.00 — EXTREME OVERSOLD** | 39.25 — approaching oversold |
+| **RSI (9)** | **20.24 — extreme oversold** | 31.86 |
+| **ADX (9)** | 39.43 (strong downtrend) | 25.50 (downtrend) |
+| **Volume Jun 22** | 4.6M (~1.8× avg — exhaustion signal) | 24.8M (5.2× avg — sustained distribution) |
 | **Rating** | ⭐⭐⭐⭐ 4.0/5 | ⭐⭐⭐⭐ 4.0/5 |
-| **Recommendation** | **Speculative Buy — RSI Oversold** | **Hold — Await $90–93 Support** |
-| **Avg PT (12M)** | $318.53 (+64.3%) · 34 analysts | $141.98 (+49.4%) · 48 analysts |
-| **Technical** | 🔴 Bearish — all MAs bearish | 🔴 Bearish Reversal — broke $98 |
+| **Recommendation** | **Speculative Buy — RSI 26 Extreme Oversold · Entry $185–192** | **Hold — Approaching $90–93 Support · Watch Jul 22 Earnings** |
+| **Avg PT (12M)** | $318.53 (+69.7%) · 34 analysts | $141.98 (+52.7%) · 48 analysts |
+| **Buy/Hold/Sell** | 31 Buy / 3 Hold / 0 Sell (91.2%) | 43 Buy / 4 Hold / 1 Sell (89.6%) |
+| **Technical** | 🔴 Bearish — new 52-wk low · all MAs bearish | 🔴 Bearish — below all MAs · approaching $90–92 |
+| **Next Catalyst** | MaintainX integration update | **Jul 22, 2026 — Q2 FY26 Earnings** |
 
 ---
 
@@ -258,4 +268,4 @@ All dependencies via CDN — no `npm install` or build step needed.
 
 ---
 
-> **Disclaimer:** For informational and educational purposes only. Not financial advice. All data sourced from publicly available filings and financial data providers as of June 22, 2026 (last trading day June 18, 2026). Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.
+> **Disclaimer:** For informational and educational purposes only. Not financial advice. All data sourced from publicly available filings and financial data providers as of June 23, 2026 (prices as of June 22, 2026 close; June 23 pre-market included). Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.
