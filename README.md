@@ -1,7 +1,7 @@
 # Stock Analysis Dashboard — ADSK vs NOW
 
 **Autodesk, Inc. (ADSK) · ServiceNow, Inc. (NOW)**  
-Interactive stock analysis dashboard built with Chart.js · Last updated: **June 23, 2026** · Data as of Jun 22, 2026 close · Jun 23 pre-market: ADSK $190.00 (+1.21%), NOW $94.36 (+1.45%)
+Interactive stock analysis dashboard built with Chart.js · Last updated: **June 24, 2026** · Data as of Jun 23, 2026 close · NOW $95.94 (+3.15%) · ADSK $187.72
 
 [![GitHub](https://img.shields.io/badge/GitHub-Stock--Analysis-blue?logo=github)](https://github.com/mohdkhidir/Stock-Analysis-Autodesk-Inc-and-ServiceNow)
 
@@ -17,16 +17,19 @@ file:///C:/path/to/dashboard.html
 
 ---
 
-## What's New — June 23, 2026
+## What's New — June 24, 2026 (data: Jun 23 close)
 
-- **Price Update** — ADSK **$187.72** (new 52-wk low $185.50 hit Jun 22, RSI 26.00 / RSI-9 20.24 extreme oversold) · NOW **$93.01** (-2.14%, 24.8M shares, approaching $90–92 support)
-- **ADSK new 52-wk low** — $185.50 intraday Jun 22; closed $187.72 (-3.15%); ADX 39.43 strong downtrend; volume 4.6M (exhaustion signal); pre-market Jun 23: $190.00 (+1.21%)
-- **NOW continued decline** — $93.01 Jun 22 close; 24.8M shares (5.2× avg sustained); RSI 39.25 approaching oversold; Jul 22 earnings upcoming
-- **New analyst actions** — Exane BNP Paribas initiated ADSK Buy/$295; Citi maintained ADSK Hold/$252; Benchmark raised NOW to $130; BofA initiated NOW Buy/$130
-- **Market indices updated** — S&P 500 7,472 (-0.37%), NASDAQ 26,167 (-1.32% Big Tech drag), DJIA 51,713 (+0.29%) as of Jun 22
-- **Charts extended** — Jun 22 daily and weekly bars added; ADSK RSI extreme oversold zone visible
-- **Upside recalculated** — ADSK +69.7% to avg PT; NOW +52.7% to avg PT (from new lower prices)
-- **NOW analyst mix updated** — 43 Buy / 4 Hold / 1 Sell (89.6% buy ratio); 1 Strong Sell added
+- **NOW Major Reversal** — NOW closed **$95.94 (+3.15%)** on Jun 23 — massive reversal from $93.01; High $97.50, Low $94.61, Open $95.14; Post-market $96.61 (+0.70%)
+- **NOW Volume Surge** — 32.56M shares (8.1× avg) Jun 23; combined with Jun 22's 24.8M = **57.4M shares in 2 days** — historic capitulation/reversal event
+- **NOW Net Money Inflow +$49.40M** — Total inflow $422.55M vs outflow $373.15M; all 4 size tiers (XL +$14.4M · L +$6.2M · M +$10.3M · S +$18.5M) net positive
+- **NOW Active Buy Dominant** — Active Buy ~22.3M shares (68.4%) vs Active Sell ~10.3M (31.6%); Net Active Buy +12.0M shares
+- **NOW Volume Profile POC shifted** — New POC at **$92–96 (28.1M shares)** — largest 30-day concentration zone, replacing old $100–105 POC; strong support base established
+- **NEW: Trade Overview section** — Full money flow breakdown by trade size (XL/L/M/S), Active Buy/Sell donut chart, session stats, post-market data
+- **NOW Market Cap** — Updated to **$98.94B** (from $95.9B) reflecting Jun 23 close
+- **ADSK unchanged** — Still $187.72, RSI 26.00 extreme oversold, new 52-wk low $185.50, Speculative Buy thesis intact
+
+### Previous Update — June 23, 2026
+- ADSK new 52-wk low $185.50; NOW $93.01 (-2.14%, 24.8M shares); analyst actions; ADSK RSI 26 extreme oversold
 
 ### Previous Update — June 22, 2026
 - US Economic Indicators (12), Federal Reserve FOMC Jun 17, Market Indices, Sector Heatmap, Company Logos
@@ -74,11 +77,12 @@ file:///C:/path/to/dashboard.html
 
 | Section | Contents |
 |---|---|
-| **Snapshot Cards** | Live price, market cap, P/E, revenue, analyst rating, PT — with company logos |
+| **Snapshot Cards** | Live price, market cap, P/E, revenue, analyst rating, PT, net inflow — with company logos |
 | **Pro Chart** | Candlestick + volume + RSI(14) integrated pro view with Volume Profile sidebar |
 | **Chart Style Gallery** | 5 live mini-chart previews |
 | **Support & Resistance** | Daily + Weekly S/R levels with colour-coded badges |
-| **Volume Profile** | 30-day POC, HVN, LVN bar charts + written analysis |
+| **Volume Profile** | 30-day POC, HVN, LVN bar charts + written analysis (NOW POC updated to $92–96) |
+| **Trade Overview** | Money flow by size (XL/L/M/S), Active Buy/Sell donut, session & post-market stats |
 | **Technical Analysis** | MA, VWAP, RSI, MACD, ADX comparison table with Tippy.js tooltips |
 | **Fundamental Analysis** | Revenue, margins, guidance, AI monetization head-to-head |
 | **Corporate Actions** | Chronological event log with SEC source links |
@@ -178,7 +182,7 @@ Logos loaded via **Google Favicon Service** (`google.com/s2/favicons`) — no AP
 
 - Dark / Light mode toggle (persists via `localStorage`)
 - Scroll-to-zoom + drag-to-pan on all price charts with Reset button
-- Scroll progress bar · Back-to-top button · Section jump nav (13 sections)
+- Scroll progress bar · Back-to-top button · Section jump nav (14 sections)
 - AOS scroll-in animations · CountUp animated number counters
 - Tippy.js tooltips on RSI, MACD, EMA, SMA, VWAP, cRPO
 - Live pulse dot on date badge · Sticky navbar with blur backdrop
@@ -186,25 +190,27 @@ Logos loaded via **Google Favicon Service** (`google.com/s2/favicons`) — no AP
 
 ---
 
-## Key Findings — June 23, 2026
+## Key Findings — June 24, 2026 (data: Jun 23 close)
 
 | | ADSK | NOW |
 |---|---|---|
-| **Price (Jun 22 close)** | **$187.72** ↓ (-3.15%) | **$93.01** ↓ (-2.14%) |
-| **Pre-market Jun 23** | $190.00 (+1.21%) | $94.36 (+1.45%) |
-| **52-Wk Range** | **$185.50** – $329.09 (**new 52-wk low Jun 22!**) | $81.24 – $211.48 |
-| **Market Cap** | $39.6B | $95.9B |
+| **Price (Jun 23 close)** | **$187.72** (Jun 22 unchanged) | **$95.94** ↑ (+3.15%) — major reversal |
+| **Jun 23 Session** | Pre-market $190.00 (+1.21%) | Open $95.14 · High $97.50 · Low $94.61 |
+| **Post-Market** | — | $96.61 (+0.70%) · Vol 2.11M |
+| **52-Wk Range** | **$185.50** – $329.09 (52-wk low $185.50) | $81.24 – $211.48 |
+| **Market Cap** | $39.6B | **$98.94B** |
 | **P/E (TTM)** | **27.42×** | 55.37× |
 | **Forward P/E** | **14.56×** | 21.45× |
-| **RSI (14)** | **26.00 — EXTREME OVERSOLD** | 39.25 — approaching oversold |
-| **RSI (9)** | **20.24 — extreme oversold** | 31.86 |
-| **ADX (9)** | 39.43 (strong downtrend) | 25.50 (downtrend) |
-| **Volume Jun 22** | 4.6M (~1.8× avg — exhaustion signal) | 24.8M (5.2× avg — sustained distribution) |
+| **RSI (14)** | **26.00 — EXTREME OVERSOLD** | ~42 (recovering) |
+| **Volume Jun 23** | 4.6M (Jun 22 exhaustion) | **32.56M (8.1× avg — reversal)** |
+| **Net Money Flow** | — | **+$49.40M** (In $422.55M / Out $373.15M) |
+| **Active Buy/Sell** | — | Buy 68.4% (22.3M) vs Sell 31.6% (10.3M) |
+| **Volume Profile POC** | $215–220 (9.3M — overhead) | **$92–96 (28.1M — new support base)** |
 | **Rating** | ⭐⭐⭐⭐ 4.0/5 | ⭐⭐⭐⭐ 4.0/5 |
-| **Recommendation** | **Speculative Buy — RSI 26 Extreme Oversold · Entry $185–192** | **Hold — Approaching $90–93 Support · Watch Jul 22 Earnings** |
-| **Avg PT (12M)** | $318.53 (+69.7%) · 34 analysts | $141.98 (+52.7%) · 48 analysts |
+| **Recommendation** | **Speculative Buy — RSI 26 Extreme Oversold · Entry $185–192** | **Speculative Buy — Reversal Confirmed · Watch $97.50–$98 reclaim** |
+| **Avg PT (12M)** | $318.53 (+69.7%) · 34 analysts | $141.98 (+47.9% from $95.94) · 48 analysts |
 | **Buy/Hold/Sell** | 31 Buy / 3 Hold / 0 Sell (91.2%) | 43 Buy / 4 Hold / 1 Sell (89.6%) |
-| **Technical** | 🔴 Bearish — new 52-wk low · all MAs bearish | 🔴 Bearish — below all MAs · approaching $90–92 |
+| **Technical** | 🔴 Bearish — RSI 26 extreme oversold · all MAs bearish | 🟡 Recovering — massive vol reversal · next: reclaim $98–100 |
 | **Next Catalyst** | MaintainX integration update | **Jul 22, 2026 — Q2 FY26 Earnings** |
 
 ---
@@ -233,9 +239,14 @@ All dependencies via CDN — no `npm install` or build step needed.
 ## Files
 
 ```
-├── dashboard.html   # Full interactive dashboard — open directly in browser
-├── CLAUDE.md        # Comprehensive markdown analysis — all data tables, S/R, candle patterns, VP
-└── README.md        # This file
+├── dashboard.html        # Full interactive dashboard — open directly in browser
+├── CLAUDE.md             # Comprehensive markdown analysis — all data tables, S/R, candle patterns, VP
+├── README.md             # This file
+└── Image/
+    ├── NOW - 23June261.png   # Trade Overview (price, money flow, inflow/outflow by size)
+    ├── NOW - 23June262.png   # Volume Profile & Active Buy/Sell table (upper)
+    ├── NOW - 23June263.png   # Volume Profile & Active Buy/Sell table (middle)
+    └── NOW - 23June264.png   # Volume Profile & Active Buy/Sell table (lower)
 ```
 
 ---
@@ -268,4 +279,4 @@ All dependencies via CDN — no `npm install` or build step needed.
 
 ---
 
-> **Disclaimer:** For informational and educational purposes only. Not financial advice. All data sourced from publicly available filings and financial data providers as of June 23, 2026 (prices as of June 22, 2026 close; June 23 pre-market included). Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.
+> **Disclaimer:** For informational and educational purposes only. Not financial advice. All data sourced from publicly available filings and financial data providers. ADSK price as of June 22, 2026 close; NOW price as of June 23, 2026 close. Money flow, active buy/sell, and volume profile data sourced from moomoo platform screenshots (Jun 23, 2026). Price data includes synthetically generated intra-period points for visualization. Always conduct independent due diligence before making investment decisions.

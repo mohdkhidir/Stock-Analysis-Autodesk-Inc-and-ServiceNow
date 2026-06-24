@@ -549,6 +549,7 @@
   <a href="#sec-gallery"><i class="fa fa-palette me-1"></i>Chart Gallery</a>
   <a href="#sec-sr"><i class="fa fa-shield-halved me-1"></i>S/R Levels</a>
   <a href="#sec-volume"><i class="fa fa-chart-bar me-1"></i>Volume Profile</a>
+  <a href="#sec-trade-overview"><i class="fa fa-money-bill-trend-up me-1"></i>Trade Overview</a>
   <a href="#sec-technical"><i class="fa fa-magnifying-glass-chart me-1"></i>Technicals</a>
   <a href="#sec-fundamentals"><i class="fa fa-file-invoice-dollar me-1"></i>Fundamentals</a>
   <a href="#sec-corporate"><i class="fa fa-landmark me-1"></i>Corporate Actions</a>
@@ -613,21 +614,23 @@
           </div>
           <div class="kpi-icon kpi-now"><i class="fa fa-gears"></i></div>
         </div>
-        <div class="price-big price-dn">$<span id="now-price">93.01</span></div>
-        <div class="c-neg mb-3" style="font-size:.85rem">
-          <i class="fa fa-caret-down me-1"></i>-$2.03 &nbsp;(-2.14%) &nbsp;
-          <span class="c-muted" style="font-size:.75rem">Jun 22 close · still below $98 support; continued decline</span>
+        <div class="price-big price-up">$<span id="now-price">95.94</span></div>
+        <div class="c-pos mb-3" style="font-size:.85rem">
+          <i class="fa fa-caret-up me-1"></i>+$2.93 &nbsp;(+3.15%) &nbsp;
+          <span class="c-muted" style="font-size:.75rem">Jun 23 close · major reversal +3.15% · Open $95.14 · High $97.50 · Low $94.61</span>
         </div>
-        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-now">$<span id="now-cap">95.9</span>B</span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-building-columns me-1 c-muted"></i>Market Cap</span><span class="mv c-now">$<span id="now-cap">98.94</span>B</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-chart-area me-1 c-muted"></i>52-Wk Range</span><span class="mv">$81.24 – $211.48</span></div>
-        <div class="mrow"><span class="ml"><i class="fa fa-bars-progress me-1 c-muted"></i>Volume (Jun 22)</span><span class="mv c-neg">24.8M shares <span class="c-muted fw-normal">(5.2× avg — still elevated)</span></span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-bars-progress me-1 c-muted"></i>Volume (Jun 23)</span><span class="mv c-pos">32.56M shares <span class="c-muted fw-normal">(8.1× avg — massive reversal day)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-percent me-1 c-muted"></i>P/E Ratio (TTM)</span><span class="mv c-warn">55.37×</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-scale-balanced me-1 c-muted"></i>EV / Revenue (TTM)</span><span class="mv c-warn">7.0×</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-arrow-trend-up me-1 c-muted"></i>Revenue TTM</span><span class="mv c-pos">$13.96B <span class="c-muted fw-normal">(+21.7% YoY)</span></span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-coins me-1 c-muted"></i>Sub. Gross Margin</span><span class="mv c-pos">80%</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-star me-1 c-muted"></i>Analyst Rating</span><span class="mv c-pos"><i class="fa fa-star c-now"></i> Strong Buy (48)</span></div>
         <div class="mrow"><span class="ml"><i class="fa fa-bullseye me-1 c-muted"></i>Avg Price Target</span><span class="mv c-blue">$<span id="now-target">141.98</span> <span class="c-pos fw-normal">(+52.7%)</span></span></div>
-        <div class="mrow"><span class="ml"><i class="fa fa-shield-halved me-1 c-muted"></i>Support / Resistance</span><span class="mv">$90–93 / $96–100</span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-shield-halved me-1 c-muted"></i>Support / Resistance</span><span class="mv">$93–95 (new) / $98–100 (reclaim target)</span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-moon me-1 c-muted"></i>Post-Mkt (20:01 ET)</span><span class="mv c-pos">$96.61 <span class="c-muted fw-normal">+$0.67 (+0.70%) · Vol 2.11M</span></span></div>
+        <div class="mrow"><span class="ml"><i class="fa fa-arrow-trend-up me-1 c-muted"></i>Net Money Inflow</span><span class="mv c-pos">+$49.40M <span class="c-muted fw-normal">(In $422.55M / Out $373.15M)</span></span></div>
       </div>
     </div>
   </div>
@@ -917,15 +920,105 @@
   </div>
   <div class="col-md-6" data-aos="fade-left" data-aos-duration="500">
     <div class="chart-wrap">
-      <div class="mb-2 fw-bold c-now"><i class="fa fa-map-pin me-1"></i>NOW Volume Profile &nbsp;<span class="bdg-neg bdg">Price BELOW POC: $100–105 &nbsp;·&nbsp; 12.1M overhead</span></div>
+      <div class="mb-2 fw-bold c-now"><i class="fa fa-map-pin me-1"></i>NOW Volume Profile &nbsp;<span class="bdg-pos bdg">NEW POC: $92–96 &nbsp;·&nbsp; 28.1M shares (Jun 22–23 reversal)</span></div>
       <canvas id="nowVP" style="max-height:220px"></canvas>
       <div class="vp-summary">
-        <strong class="c-neg"><i class="fa fa-triangle-exclamation me-1"></i>Bearish Breakdown — Price Now Below POC</strong>
-        NOW's price ($93.01) has fallen <em>below</em> the 30-day Point of Control ($100–105, 12.1M shares), converting what was an accumulation zone into an overhead supply ceiling.
-        <div class="vp-finding"><i class="fa fa-circle-xmark c-neg"></i><span><strong class="c-neg">POC Becomes Resistance:</strong> The 12.1M-share POC at $100–105 now acts as a heavy overhead supply. Sellers who accumulated in that zone are now underwater — they will sell into any rally to break even.</span></div>
-        <div class="vp-finding"><i class="fa fa-triangle-exclamation c-warn"></i><span><strong class="c-warn">HVN at $96–100 (10.2M) breached:</strong> Price has broken through the High Volume Node that was the main support floor. This zone now acts as near-term resistance. A reclaim of $98–100 on strong volume would signal a potential reversal.</span></div>
-        <div class="vp-finding"><i class="fa fa-shield-halved c-warn"></i><span><strong class="c-warn">Current Price in Thin Zone ($92–96):</strong> Only ~8.9M shares traded in this range — less than the POC and HVN, meaning less price discovery. Price could move quickly in either direction from here.</span></div>
-        <div class="vp-finding"><i class="fa fa-bullseye c-now"></i><span><strong class="c-now">Key Finding (Jun 23):</strong> NOW closed at $93.01 on Jun 22 with 24.8M shares (still 5.2× avg) — sustained institutional distribution. Must reclaim $96–98 (HVN base) to neutralize the breakdown. Price approaching $90–92 support zone. RSI 39.25 not yet oversold; more downside possible before a bounce. Watch $90–92 for capitulation.</span></div>
+        <strong class="c-pos"><i class="fa fa-circle-check me-1"></i>Reversal Confirmed — Massive Volume Shifts POC Lower to $92–96</strong>
+        Jun 22 (24.8M shares @$93) + Jun 23 (32.56M shares, close $95.94 +3.15%) created an enormous 2-day volume concentration at $92–96 — now the new POC. Net inflow +$49.40M confirms institutional buying.
+        <div class="vp-finding"><i class="fa fa-circle-check c-pos"></i><span><strong class="c-pos">New POC at $92–96 (28.1M shares):</strong> The 2-day capitulation/reversal event created the highest-volume zone in the 30-day window. This new POC acts as a strong support base — a tested floor where institutions aggressively accumulated.</span></div>
+        <div class="vp-finding"><i class="fa fa-arrow-trend-up c-warn"></i><span><strong class="c-warn">Old POC $100–105 (12.1M) = Overhead Target:</strong> The previous POC now acts as resistance. A decisive reclaim of $98–100 (first target) then $100–105 (old POC) would confirm trend reversal. Jun 23's high of $97.50 tests the lower edge of this zone.</span></div>
+        <div class="vp-finding"><i class="fa fa-money-bill-trend-up c-now"></i><span><strong class="c-now">Active Buy Dominant (Jun 23):</strong> Session Active Buy ~22.3M shares vs Active Sell ~10.3M shares — ratio 68%/32%. Net Active Buy: +12.0M shares. All size tiers (XL, L, M, S) showed positive net inflow, confirming broad-based institutional participation.</span></div>
+        <div class="vp-finding"><i class="fa fa-bullseye c-pos"></i><span><strong class="c-pos">Key Finding (Jun 23):</strong> NOW surged +3.15% to $95.94 on massive 32.56M volume (8.1× avg) — the highest single-day volume in months. Post-market extended to $96.61 (+0.70%). RSI recovering from 39.25 toward neutral. Watch $97.50 (session high / near-term resistance) then $98–100 as the next critical reclaim zone.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TRADE OVERVIEW — MONEY FLOW ═══ -->
+<div class="sec-title mt-2" id="sec-trade-overview"><i class="fa fa-money-bill-trend-up me-2"></i>NOW Trade Overview — Money Flow Analysis (Jun 23, 2026)</div>
+<div class="row g-3 mb-4">
+
+  <!-- Session Stats Card -->
+  <div class="col-md-4" data-aos="fade-right" data-aos-duration="500">
+    <div class="card card-now h-100">
+      <div class="card-body">
+        <div class="sec-title" style="font-size:.7rem;margin-bottom:12px"><i class="fa fa-clock me-1"></i>Jun 23 Session Summary</div>
+        <div class="mrow"><span class="ml">Close</span><span class="mv c-pos fw-bold">$95.94 <span style="font-size:.75rem">+3.15%</span></span></div>
+        <div class="mrow"><span class="ml">Open</span><span class="mv">$95.14</span></div>
+        <div class="mrow"><span class="ml">High</span><span class="mv c-pos">$97.50</span></div>
+        <div class="mrow"><span class="ml">Low</span><span class="mv c-neg">$94.61</span></div>
+        <div class="mrow"><span class="ml">Volume</span><span class="mv c-warn">32.56M <span class="c-muted fw-normal">(8.1× avg)</span></span></div>
+        <div class="mrow"><span class="ml">Turnover</span><span class="mv">$3.14B</span></div>
+        <div class="mrow"><span class="ml">Market Cap</span><span class="mv c-now">$98.94B</span></div>
+        <div class="mrow" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px"><span class="ml">Post-Mkt (20:01 ET)</span><span class="mv c-pos">$96.61 +0.70%</span></div>
+        <div class="mrow"><span class="ml">PM High / Low</span><span class="mv">$96.67 / $95.60</span></div>
+        <div class="mrow"><span class="ml">PM Volume</span><span class="mv">2.11M · $202M turnover</span></div>
+        <div class="mrow"><span class="ml">Overnight (22:37 ET)</span><span class="mv c-pos">$96.05 +0.11%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Net Money Flow Card -->
+  <div class="col-md-4" data-aos="fade-up" data-aos-duration="500">
+    <div class="card card-now h-100">
+      <div class="card-body">
+        <div class="sec-title" style="font-size:.7rem;margin-bottom:12px"><i class="fa fa-arrows-left-right me-1"></i>Net Money Flow by Trade Size</div>
+        <div class="d-flex justify-content-between align-items-center mb-3 p-2" style="background:var(--pos-dim);border-radius:8px;border:1px solid var(--pos)">
+          <span style="font-size:.8rem;color:var(--muted)">Net Inflow</span>
+          <span class="fw-bold c-pos" style="font-size:1.3rem">+$49.40M</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2" style="font-size:.75rem">
+          <span class="c-pos fw-bold"><i class="fa fa-arrow-down me-1"></i>Inflow: $422.55M</span>
+          <span class="c-neg fw-bold"><i class="fa fa-arrow-up me-1"></i>Outflow: $373.15M</span>
+        </div>
+        <!-- Progress bar showing inflow dominance -->
+        <div class="progress mb-3" style="height:8px;background:var(--neg-dim)">
+          <div class="progress-bar bg-success" style="width:53.1%"></div>
+        </div>
+        <table class="table table-hover mb-0" style="font-size:.78rem">
+          <thead><tr>
+            <th>Size</th><th class="text-end c-pos">Inflow</th><th class="text-end c-neg">Outflow</th><th class="text-end">Net</th><th class="text-end">In%</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="bdg bdg-blue">XL</span></td><td class="text-end c-pos">$80.87M</td><td class="text-end c-neg">$66.48M</td><td class="text-end c-pos fw-bold">+$14.39M</td><td class="text-end c-muted">10.16%</td></tr>
+            <tr><td><span class="bdg bdg-blue">L</span></td><td class="text-end c-pos">$82.78M</td><td class="text-end c-neg">$76.56M</td><td class="text-end c-pos fw-bold">+$6.22M</td><td class="text-end c-muted">10.40%</td></tr>
+            <tr><td><span class="bdg bdg-blue">M</span></td><td class="text-end c-pos">$58.18M</td><td class="text-end c-neg">$47.90M</td><td class="text-end c-pos fw-bold">+$10.28M</td><td class="text-end c-muted">7.31%</td></tr>
+            <tr class="row-pos"><td><span class="bdg bdg-pos">S</span></td><td class="text-end c-pos">$200.72M</td><td class="text-end c-neg">$182.22M</td><td class="text-end c-pos fw-bold">+$18.50M</td><td class="text-end c-muted">25.23%</td></tr>
+            <tr style="font-weight:700;border-top:2px solid var(--border)"><td>Total</td><td class="text-end c-pos">$422.55M</td><td class="text-end c-neg">$373.15M</td><td class="text-end c-pos">+$49.40M</td><td class="text-end c-muted">53.10%</td></tr>
+          </tbody>
+        </table>
+        <div class="mt-2" style="font-size:.72rem;color:var(--muted)"><i class="fa fa-circle-info me-1"></i>XL = large-lot institutional · S = retail/small-lot orders</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Buy / Sell Card -->
+  <div class="col-md-4" data-aos="fade-left" data-aos-duration="500">
+    <div class="card card-now h-100">
+      <div class="card-body">
+        <div class="sec-title" style="font-size:.7rem;margin-bottom:12px"><i class="fa fa-chart-pie me-1"></i>Active Buy vs Active Sell (Jun 23 Session)</div>
+        <!-- Donut chart canvas -->
+        <div class="d-flex justify-content-center mb-3">
+          <canvas id="nowFlowDonut" style="max-width:180px;max-height:180px"></canvas>
+        </div>
+        <div class="d-flex justify-content-around mb-3">
+          <div class="text-center">
+            <div class="fw-bold c-pos" style="font-size:1.2rem">~22.3M</div>
+            <div style="font-size:.72rem;color:var(--muted)"><i class="fa fa-circle c-pos me-1" style="font-size:.6rem"></i>Active Buy (68.4%)</div>
+          </div>
+          <div class="text-center">
+            <div class="fw-bold c-neg" style="font-size:1.2rem">~10.3M</div>
+            <div style="font-size:.72rem;color:var(--muted)"><i class="fa fa-circle c-neg me-1" style="font-size:.6rem"></i>Active Sell (31.6%)</div>
+          </div>
+        </div>
+        <div class="p-2 mb-2" style="background:var(--pos-dim);border-radius:8px;border:1px solid var(--pos);text-align:center">
+          <div style="font-size:.72rem;color:var(--muted)">Net Active Buy</div>
+          <div class="fw-bold c-pos">+12.0M shares</div>
+        </div>
+        <div class="vp-summary" style="margin-top:8px">
+          <div class="vp-finding"><i class="fa fa-circle-check c-pos"></i><span><strong class="c-pos">All 4 Size Tiers Net Positive:</strong> XL +$14.4M · L +$6.2M · M +$10.3M · S +$18.5M. Broad-based buying across retail and institutional participants.</span></div>
+          <div class="vp-finding"><i class="fa fa-fire c-warn"></i><span><strong class="c-warn">Volume Context:</strong> Jun 23's 32.56M shares = 8.1× average daily volume. Combined with Jun 22's 24.8M (5.2× avg), 57.4M shares traded in 2 days — a historic 2-day capitulation/reversal event.</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2284,9 +2377,9 @@ function initProCharts() {
   };
   const nowVP = {
     levels:  [[85,88],[88,92],[92,96],[96,100],[100,105],[105,110]],
-    volumes: [4.2, 7.5, 8.9, 10.2, 12.1, 2.3],
-    pocIdx:  4,
-    currentPrice: 93.01
+    volumes: [4.2, 9.5, 28.1, 14.5, 12.1, 2.3],
+    pocIdx:  2,
+    currentPrice: 95.94
   };
 
   /* ── shared colour helpers ── */
@@ -2393,7 +2486,7 @@ function initProCharts() {
           return b ? [`O $${b.o}  H $${b.h}  L $${b.l}  C $${b.c}`] : [];
         }}
       }, annotation:noAnnotation, zoom:zoomPlugin },
-      scales:{ x:xHidden, y:yRight(83, 112) }
+      scales:{ x:xHidden, y:yRight(83, 115) }
     }
   });
   proNowPrice.config._vpConfig = nowVP;
@@ -2953,18 +3046,61 @@ const adskVPChart = new Chart(document.getElementById('adskVP'),{
   }
 });
 
-/* ── NOW VOLUME PROFILE ── */
+/* ── NOW TRADE OVERVIEW — ACTIVE BUY/SELL DONUT ── */
+new Chart(document.getElementById('nowFlowDonut'),{
+  type:'doughnut',
+  data:{
+    labels:['Active Buy (68.4%)','Active Sell (31.6%)'],
+    datasets:[{
+      data:[68.4,31.6],
+      backgroundColor:['rgba(63,185,80,.85)','rgba(248,81,73,.75)'],
+      borderColor:['#3fb950','#f85149'],
+      borderWidth:2,
+      hoverOffset:6
+    }]
+  },
+  options:{
+    cutout:'68%',
+    responsive:true,
+    animation:{duration:1000,easing:'easeOutQuart'},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#1c2128',bodyColor:mutedColor,
+        callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}%`}
+      }
+    }
+  }
+});
+
+/* ── NOW VOLUME PROFILE (Updated Jun 23, 2026) ── */
 const nowVPChart = new Chart(document.getElementById('nowVP'),{
   type:'bar',
   data:{
-    labels:['$85–88','$88–92','$92–96','$96–100','$100–105 ◄POC','$105–110'],
-    datasets:[{label:'Volume (M)',data:[4.2,7.5,8.9,10.2,12.1,2.3],borderRadius:3,
-      backgroundColor:[0,1,2,3,4,5].map(i=> i===4?'#00d4aa':'rgba(0,212,170,.4)')}]
+    labels:['$85–88','$88–92','$92–96 ◄NEW POC','$96–100','$100–105 (old POC)','$105–110'],
+    datasets:[{label:'Volume (M)',data:[4.2,9.5,28.1,14.5,12.1,2.3],borderRadius:3,
+      backgroundColor:[0,1,2,3,4,5].map(i=>{
+        if(i===2) return '#00d4aa';              // new POC — teal highlight
+        if(i===3) return 'rgba(63,185,80,.55)';  // $96–100 strong secondary
+        if(i===4) return 'rgba(255,166,87,.5)';  // old POC — warn (now resistance)
+        return 'rgba(0,212,170,.35)';
+      })}]
   },
   options:{
     indexAxis:'y', responsive:true,
     animation:{ duration:1200, easing:'easeOutQuart' },
-    plugins:{legend:{display:false}, tooltip:{backgroundColor:'#1c2128',titleColor:'#00d4aa',bodyColor:mutedColor}},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#1c2128',titleColor:'#00d4aa',bodyColor:mutedColor,
+        callbacks:{
+          label:ctx=>{
+            const notes=['Base support','Jun 22 distribution zone','Jun 22 (24.8M) + Jun 23 (32.56M) — new POC','Jun 23 session high $97.50 zone','Old POC — now overhead resistance','Thin overhead'];
+            return ` ${ctx.parsed.x}M shares — ${notes[ctx.dataIndex]}`;
+          }
+        }
+      }
+    },
     scales:{
       x:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor},title:{display:true,text:'Volume (M shares)',color:mutedColor,font:{size:10}}},
       y:{ticks:{color:mutedColor,font:{size:10}},grid:{color:gridColor}}
